@@ -62,14 +62,15 @@ const services = [
 
 <style>
   .services { display: grid; gap: var(--s-4); grid-template-columns: 1fr; }
-  .service { display: flex; gap: var(--s-4); align-items: flex-start; padding: var(--s-5); border: 1px solid var(--line); height: 100%; transition: border-color 0.3s var(--ease), background 0.3s var(--ease); }
-  .service:hover { border-color: var(--ink); }
+  .service { display: flex; gap: var(--s-4); align-items: flex-start; padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--radius); height: 100%; transition: border-color 0.3s var(--ease), background 0.3s var(--ease); }
+  .service:hover { border-color: var(--ink); background: var(--paper-2); }
   .service__icon { width: 28px; height: 28px; flex: none; color: var(--accent-ink); }
   .service__body { display: grid; gap: var(--s-1); }
   .service__title { font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.02em; }
   .service__text { font-size: var(--fs-sm); color: var(--ink-70); }
   .services--compact { gap: var(--s-2); }
-  .services--compact .service { padding: var(--s-3) var(--s-4); border: 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .services--compact .service { padding: var(--s-3) var(--s-4); border: 0; border-bottom: 1px solid var(--line); border-radius: 0; align-items: center; }
+  .services--compact .service:hover { background: transparent; }
   .services--compact .service__icon { width: 20px; height: 20px; }
   @media (min-width: 640px) { .services:not(.services--compact) { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1100px) { .services:not(.services--compact) { grid-template-columns: repeat(5, 1fr); } }

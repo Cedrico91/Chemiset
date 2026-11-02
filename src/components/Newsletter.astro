@@ -36,8 +36,9 @@ const { tone = 'dark' } = Astro.props;
   .nl__input::placeholder { color: inherit; opacity: 0.5; }
   .nl__btn {
     font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: var(--s-3) var(--s-5); background: var(--paper); color: var(--ink); transition: background 0.25s var(--ease), color 0.25s var(--ease);
+    padding: var(--s-3) var(--s-5); background: var(--paper); color: var(--ink); border-radius: var(--radius-sm); transition: background 0.25s var(--ease), color 0.25s var(--ease);
   }
+  .nl__input { border-radius: 0; }
   .nl--light .nl__btn { background: var(--ink); color: var(--paper); }
   .nl__btn:hover { background: var(--accent); color: var(--ink); }
   .nl__msg { grid-column: 1 / -1; font-size: var(--fs-xs); opacity: 0.8; min-height: 1.2em; }

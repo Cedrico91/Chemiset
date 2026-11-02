@@ -157,7 +157,10 @@ const sizes = product.sizes ?? [];
   .buy__error { font-size: var(--fs-xs); color: var(--accent-ink); }
   .buy__error[hidden] { display: none; }
   .buy__row { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); }
-  .qty { display: inline-grid; grid-template-columns: 2.5rem 3rem 2.5rem; border: 1px solid var(--ink); height: 3.25rem; }
+  .qty { display: inline-grid; grid-template-columns: 2.5rem 3rem 2.5rem; border: 1px solid var(--ink); height: 3.25rem; border-radius: var(--radius-sm); overflow: hidden; }
+  .qty input { border-radius: 0; }
+  .buy__add { border-radius: var(--radius-sm); }
+  .size span { border-radius: var(--radius-sm); }
   .qty button { font-size: 1.1rem; transition: background 0.2s var(--ease); }
   .qty button:hover { background: var(--paper-2); }
   .qty input { font: inherit; text-align: center; border: 0; border-inline: 1px solid var(--line); background: transparent; color: inherit; -moz-appearance: textfield; appearance: textfield; min-width: 0; }

@@ -101,7 +101,10 @@ const suggestions = featuredProducts(4);
   .lines :global(.line__remove) { font-size: var(--fs-xs); color: var(--ink-40); letter-spacing: 0.04em; border-bottom: 1px solid transparent; }
   .lines :global(.line__remove:hover) { color: var(--accent-ink); border-color: currentColor; }
 
-  .summary { display: grid; gap: var(--s-4); align-content: start; padding: var(--s-6); background: var(--paper-2); }
+  .summary { display: grid; gap: var(--s-4); align-content: start; padding: var(--s-6); background: var(--paper-2); border-radius: var(--radius); }
+  .summary__order, .btn-solid { border-radius: var(--radius-sm); }
+  .lines :global(.line__img) { border-radius: var(--radius-sm); }
+  .lines :global(.qty), .lines :global(.line__size) { border-radius: var(--radius-sm); }
   .summary__list { margin: 0; display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
   .summary__list div { display: flex; justify-content: space-between; gap: var(--s-4); }
   .summary__list dt { color: var(--ink-70); }

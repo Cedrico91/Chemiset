@@ -1,11 +1,14 @@
 /**
  * ============================================================================
- *  DONNÉES DE DÉMONSTRATION — AUCUNE INFORMATION RÉELLE
+ *  CATALOGUE DE LA BOUTIQUE
  * ============================================================================
- *  Les créateurs, les pièces, les descriptions et les photos de ce fichier sont
- *  FICTIFS. Ils servent uniquement à montrer à La Chemise Africaine ce que son
- *  site pourrait être. Les photos sont des visuels d'illustration (Unsplash /
- *  Pexels, licences libres) à remplacer par les photos de la boutique.
+ *  Deux types de contenus cohabitent tant que le site est en mise en place :
+ *   - MODÈLES DE LA BOUTIQUE : les pièces dont le client a transmis les photos
+ *     (créateur `la-chemise-africaine`). Prix et tailles restent « à confirmer »
+ *     tant que la boutique ne les a pas communiqués : ne rien inventer.
+ *   - DONNÉES DE DÉMONSTRATION : créateurs, pièces, descriptions et prix FICTIFS,
+ *     photos d'illustration (Unsplash / Pexels). À supprimer au fur et à mesure
+ *     que le vrai catalogue arrive.
  *
  *  Comment éditer :
  *   - Ajouter un créateur : copier un bloc dans `designers`, choisir un slug unique.
@@ -54,10 +57,26 @@ export const catalogue: Catalogue = {
     },
   ],
 
-  // ---------------------------------------------------------------------------
-  // CRÉATEURS — noms FICTIFS
-  // ---------------------------------------------------------------------------
   designers: [
+    // -------------------------------------------------------------------------
+    // LA BOUTIQUE ELLE-MÊME : les modèles de la maison (photos transmises par le client)
+    // -------------------------------------------------------------------------
+    {
+      slug: 'la-chemise-africaine',
+      name: 'La Chemise Africaine',
+      country: 'Bénin',
+      city: 'Cotonou',
+      tagline: 'Les modèles de la maison.',
+      bio: `Les chemises et tuniques dessinées pour la boutique : cols mao et cols ronds, boutonnières courtes, empiècements de tissus teints ou tissés sur des cotons unis.
+
+Les informations de taille, de matière et de prix de chaque modèle sont communiquées par la boutique sur WhatsApp.`,
+      portrait: img('/brand/emblem-square.png', 'Emblème de La Chemise Africaine', 512, 512),
+      specialties: ['Chemises', 'Tuniques', 'Col mao'],
+    },
+
+    // -------------------------------------------------------------------------
+    // CRÉATEURS DE DÉMONSTRATION — noms FICTIFS
+    // -------------------------------------------------------------------------
     {
       slug: 'ayaba-hounkpe',
       name: 'Ayaba Hounkpè', // FICTIF
@@ -184,6 +203,67 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
   // PIÈCES — noms et descriptions FICTIFS, prix volontairement absents
   // ---------------------------------------------------------------------------
   products: [
+    // =========================================================================
+    // MODÈLES DE LA BOUTIQUE — photos transmises par le client le 2 novembre 2026.
+    // Prix absent → « Prix sur demande » ; tailles absentes → « taille à préciser »
+    // dans le panier. Compléter `price`, `sizes`, `materials` dès confirmation.
+    // =========================================================================
+    {
+      slug: 'chemise-col-mao-plastron-indigo',
+      name: 'Chemise col mao, plastron indigo',
+      designerSlug: 'la-chemise-africaine',
+      category: 'homme',
+      collectionSlug: 'la-chemise',
+      description:
+        'Chemise bleu ciel à manches longues et col mao. Plastron et empiècements d’épaules en tissu indigo à motifs géométriques, patte de boutonnage à deux boutons, poignets boutonnés.',
+      images: [product('chemise-bleue-plastron-indigo-1', 'Chemise bleu ciel à col mao et plastron indigo à motifs géométriques')],
+      colors: ['Bleu ciel / indigo'],
+      featured: true,
+      order: -4,
+    },
+    {
+      slug: 'chemise-batik-ocre',
+      name: 'Chemise batik ocre',
+      designerSlug: 'la-chemise-africaine',
+      category: 'homme',
+      collectionSlug: 'la-chemise',
+      description:
+        'Chemise à manches courtes en coton batik, teinte ocre et brun à motifs circulaires. Col rond, patte à deux boutons, poche poitrine, fentes latérales.',
+      images: [product('chemise-batik-ocre-1', 'Chemise à manches courtes en batik ocre et brun à motifs circulaires')],
+      colors: ['Ocre / brun'],
+      featured: true,
+      order: -3,
+    },
+    {
+      slug: 'tunique-verte-rayures',
+      name: 'Tunique verte à rayures',
+      designerSlug: 'la-chemise-africaine',
+      category: 'homme',
+      collectionSlug: 'la-chemise',
+      description:
+        'Tunique verte à manches courtes et col rond, deux boutons en bois. Bandes rayées jaune et blanc sur les manches et en diagonale sur le devant, fentes latérales.',
+      images: [product('tunique-verte-rayures-1', 'Tunique verte à manches courtes avec bandes rayées jaune et blanc')],
+      colors: ['Vert / jaune'],
+      featured: true,
+      order: -2,
+    },
+    {
+      slug: 'chemise-bordeaux-bandes-ikat',
+      name: 'Chemise bordeaux à bandes ikat',
+      designerSlug: 'la-chemise-africaine',
+      category: 'homme',
+      collectionSlug: 'la-chemise',
+      description:
+        'Chemise bordeaux à manches courtes et col rond, deux boutons. Bandes de tissu ikat bleu et noir sur le devant, les épaules, les manches et le bas du vêtement, poche poitrine passepoilée.',
+      images: [product('chemise-bordeaux-ikat-1', 'Chemise bordeaux à manches courtes avec bandes ikat bleu et noir')],
+      colors: ['Bordeaux / bleu'],
+      featured: true,
+      order: -1,
+    },
+
+    // =========================================================================
+    // DONNÉES DE DÉMONSTRATION — pièces FICTIVES, visuels d'illustration
+    // =========================================================================
     // ---- HOMME
     {
       slug: 'chemise-cotonou',

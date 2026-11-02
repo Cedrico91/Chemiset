@@ -188,9 +188,10 @@ const waHref = hasWhatsApp() ? buildWaLink(site.whatsapp, buildOrderMessage()) :
   .search__input::placeholder { color: var(--ink-40); }
   .search__submit {
     font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: var(--s-2) var(--s-4); background: var(--ink); color: var(--paper);
+    padding: var(--s-2) var(--s-4); background: var(--ink); color: var(--paper); border-radius: var(--radius-sm);
   }
   .search__submit:hover { background: var(--accent); color: var(--ink); }
+  .search__input { border-radius: 0; }
 
   .menu {
     position: fixed; inset: var(--header-h) 0 0 0; background: var(--paper); color: var(--ink);

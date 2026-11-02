@@ -27,7 +27,7 @@ const { label, note, href, image, eager = false } = Astro.props;
 </a>
 
 <style>
-  .tile { display: block; position: relative; color: var(--paper); overflow: hidden; }
+  .tile { display: block; position: relative; color: var(--paper); overflow: hidden; border-radius: var(--radius); }
   .tile .img-frame::after {
     content: ''; position: absolute; inset: 0;
     background: linear-gradient(to top, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0) 55%);
@@ -42,7 +42,7 @@ const { label, note, href, image, eager = false } = Astro.props;
   .tile__note { display: none; font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
   .tile__arrow {
     width: 2rem; height: 2rem; flex: none; display: grid; place-items: center;
-    background: var(--paper); color: var(--ink); font-size: 1rem;
+    background: var(--paper); color: var(--ink); font-size: 1rem; border-radius: 50%;
     transition: background 0.3s var(--ease), transform 0.3s var(--ease);
   }
   .tile:hover .tile__arrow { background: var(--accent); transform: translateX(3px); }

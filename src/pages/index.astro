@@ -6,30 +6,25 @@ import CategoryTile from '../components/CategoryTile.astro';
 import Services from '../components/Services.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ProductGrid from '../components/ProductGrid.astro';
-import CollectionCard from '../components/CollectionCard.astro';
-import DesignerIndex from '../components/DesignerIndex.astro';
 import MapPlaceholder from '../components/MapPlaceholder.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
-import Button from '../components/Button.astro';
 import { site } from '../config/site';
 import { visuals } from '../data/catalogue';
 import { orLabel } from '../lib/format';
-import {
-  designers, featuredCollections, getCollection, getProduct, newProducts, productsByCollection, promoProducts, shopPaths,
-} from '../lib/catalogue';
+import { getProduct, productsByDesigner, shopPaths } from '../lib/catalogue';
 
-const fresh = newProducts(8);
-const shirts = getCollection('la-chemise');
-const shirtPieces = shirts ? productsByCollection(shirts.slug).slice(0, 4) : [];
-const collections = featuredCollections().filter((c) => c.slug !== 'la-chemise').slice(0, 3);
-const offers = promoProducts().slice(0, 4);
+/**
+ * Accueil volontairement court : hero, quatre rayons, les modèles de la boutique, les services, la boutique.
+ * Nouveautés, collections, offres et créateurs ont leurs propres pages, accessibles depuis le menu.
+ */
+const houseModels = productsByDesigner('la-chemise-africaine').slice(0, 4);
 
 /** Entrées par rayon. Les photos viennent du catalogue (à remplacer par les visuels de la boutique). */
 const tileImage = (slug: string) => getProduct(slug)?.images[0] ?? visuals.duo;
 const tiles = [
-  { label: 'Chemises', note: 'La pièce signature', href: shopPaths.shirts, image: tileImage('chemise-cotonou') },
+  { label: 'Chemises', note: 'La pièce signature', href: shopPaths.shirts, image: tileImage('chemise-col-mao-plastron-indigo') },
   { label: 'Femme', note: 'Robes, ensembles, tuniques', href: withBase('/catalogue/femme/'), image: tileImage('robe-ganvie') },
-  { label: 'Homme', note: 'Chemises, tuniques, boubous', href: withBase('/catalogue/homme/'), image: tileImage('tunique-natitingou') },
+  { label: 'Homme', note: 'Chemises, tuniques, boubous', href: withBase('/catalogue/homme/'), image: tileImage('chemise-batik-ocre') },
   { label: 'Accessoires', note: 'Bijoux, foulards, sacs', href: withBase('/catalogue/accessoires/'), image: tileImage('collier-perles') },
 ];
 ---
@@ -41,8 +36,8 @@ const tiles = [
     text="Chemises, robes, ensembles et accessoires signés par des créateurs africains. Choisissez, ajoutez au panier, commandez sur WhatsApp."
     desktop={visuals.heroDesktop}
     mobile={visuals.heroMobile}
-    primary={{ label: 'Voir les nouveautés', href: shopPaths.newArrivals }}
-    secondary={{ label: 'Les chemises', href: shopPaths.shirts }}
+    primary={{ label: 'Voir les chemises', href: shopPaths.shirts }}
+    secondary={{ label: 'Nouveautés', href: shopPaths.newArrivals }}
   />
 
   <section class="section section--tight">
@@ -53,63 +48,22 @@ const tiles = [
     </div>
   </section>
 
-  <section class="section section--tight">
-    <div class="container">
-      <SectionHeading eyebrow="Nouveautés" title="Les dernières pièces arrivées en boutique" link={{ label: 'Toutes les nouveautés', href: shopPaths.newArrivals }} />
-      <ProductGrid products={fresh} eagerCount={4} />
-    </div>
-  </section>
+  {houseModels.length > 0 && (
+    <section class="section signature">
+      <div class="container">
+        <SectionHeading eyebrow="Les modèles de la boutique" title="La chemise, signée par la maison" link={{ label: 'Toutes les chemises', href: shopPaths.shirts }} />
+        <ProductGrid products={houseModels} eagerCount={4} />
+      </div>
+    </section>
+  )}
 
-  <section class="section section--tight">
+  <section class="section section--tight section--paper-2">
     <div class="container">
       <Services />
     </div>
   </section>
 
-  {shirts && (
-    <section class="section section--ink signature">
-      <div class="container">
-        <div class="signature__head">
-          <div>
-            <p class="eyebrow signature__eyebrow">La pièce qui donne son nom à la boutique</p>
-            <h2 class="signature__title script">La Chemise</h2>
-            <p class="signature__text">{shirts.description}</p>
-            <Button href={shopPaths.shirts} variant="accent">Toutes les chemises</Button>
-          </div>
-        </div>
-        <div class="signature__grid">
-          <ProductGrid products={shirtPieces} />
-        </div>
-      </div>
-    </section>
-  )}
-
-  <section class="section">
-    <div class="container">
-      <SectionHeading eyebrow="Collections" title="Entrer par une envie plutôt que par un rayon" link={{ label: 'Toutes les collections', href: withBase('/collections/') }} />
-      <div class="collections">
-        {collections.map((c) => <CollectionCard collection={c} />)}
-      </div>
-    </div>
-  </section>
-
-  {offers.length > 0 && (
-    <section class="section section--paper-2">
-      <div class="container">
-        <SectionHeading eyebrow="Offres spéciales" title="Quelques pièces à prix doux, le temps des tailles disponibles" link={{ label: 'Toutes les offres', href: shopPaths.offers }} />
-        <ProductGrid products={offers} />
-      </div>
-    </section>
-  )}
-
-  <section class="section">
-    <div class="container">
-      <SectionHeading eyebrow="Nos créateurs" title="Chaque pièce porte le nom de celui ou celle qui l’a dessinée" link={{ label: 'Tous les créateurs', href: withBase('/createurs/') }} />
-      <DesignerIndex designers={designers} />
-    </div>
-  </section>
-
-  <section class="section section--paper-2" id="boutique">
+  <section class="section" id="boutique">
     <div class="container visit">
       <div class="visit__text">
         <p class="eyebrow eyebrow--accent">La boutique</p>
@@ -137,18 +91,6 @@ const tiles = [
 
 <style>
   .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-3); }
-  .collections { display: grid; gap: var(--s-8); }
-
-  .signature__head { display: grid; gap: var(--s-4); margin-bottom: var(--s-10); max-width: 48rem; }
-  .signature__head > div { display: grid; gap: var(--s-4); justify-items: start; }
-  .signature__eyebrow { color: var(--accent); }
-  .signature__title { font-size: clamp(3rem, 2rem + 5vw, 6rem); line-height: 1; color: var(--paper); letter-spacing: 0; font-weight: 400; }
-  .signature__text { font-size: var(--fs-md); opacity: 0.85; max-width: 52ch; }
-  .signature__grid :global(.card__designer) { color: var(--paper); opacity: 0.6; }
-  .signature__grid :global(.card__price) { color: var(--paper); opacity: 0.85; }
-  .signature__grid :global(.card__new) { color: var(--accent); }
-  .signature__grid :global(.card__old) { color: var(--paper); opacity: 0.5; }
-
   .visit { display: grid; gap: var(--s-10); }
   .visit__text { display: grid; gap: var(--s-4); align-content: start; }
   .visit__list { margin: var(--s-2) 0 0; display: grid; gap: var(--s-3); }
@@ -156,10 +98,8 @@ const tiles = [
   .visit__list dd { margin: 0; }
   .visit__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-6); margin-top: var(--s-2); font-size: var(--fs-sm); }
   .visit__media { display: grid; gap: var(--s-3); }
-
   @media (min-width: 960px) {
     .tiles { grid-template-columns: repeat(4, 1fr); gap: var(--s-4); }
-    .collections { grid-template-columns: repeat(3, 1fr); }
     .visit { grid-template-columns: 0.9fr 1.1fr; gap: var(--s-16); align-items: start; }
     .visit__media { grid-template-columns: 1.2fr 0.8fr; align-items: end; }
   }
