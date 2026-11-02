@@ -53,7 +53,7 @@ const waHref = hasWhatsApp() ? buildWaLink(site.whatsapp, buildOrderMessage()) :
       <nav class="nav" aria-label="Navigation principale">
         <ul class="nav__list">
           {nav.map((item) => (
-            <li>
+            <li class:list={{ 'nav__item--optional': item.key === 'collections' }}>
               <a href={item.href} class:list={['nav__link', { 'is-current': current === item.key, 'nav__link--accent': item.key === 'offres' }]} aria-current={current === item.key ? 'page' : undefined}>
                 {item.label}
               </a>
@@ -213,12 +213,16 @@ const waHref = hasWhatsApp() ? buildWaLink(site.whatsapp, buildOrderMessage()) :
     .topbar__links { display: flex; }
     .nav { display: block; min-width: 0; overflow-x: auto; scrollbar-width: none; }
     .nav::-webkit-scrollbar { display: none; }
-    .header__actions { gap: var(--s-1); }
-    .header__cta { display: inline-flex; }
+    .nav__list { gap: var(--s-2); }
+    .nav__link { font-size: 0.8125rem; }
+    .nav__item--optional { display: none; } /* « Collections » reste accessible depuis l'accueil et le pied de page */
+    .header__actions { gap: 0; }
     .icon--search { display: grid; }
     .burger, .menu { display: none !important; }
   }
-  @media (min-width: 1280px) { .nav__list { gap: var(--s-6); } .navbar__inner { gap: var(--s-8); } }
+  @media (min-width: 1180px) { .nav__item--optional { display: block; } .nav__list { gap: var(--s-4); } }
+  @media (min-width: 1440px) { .header__cta { display: inline-flex; } .nav__link { font-size: var(--fs-sm); } .nav__list { gap: var(--s-5); } .navbar__inner { gap: var(--s-6); } .header__actions { gap: var(--s-1); } }
+  @media (min-width: 1600px) { .nav__list { gap: var(--s-6); } .navbar__inner { gap: var(--s-8); } }
 </style>
 
 <script>
