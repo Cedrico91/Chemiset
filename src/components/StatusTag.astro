@@ -1,0 +1,28 @@
+---
+import type { ProductStatus } from '../data/types';
+
+interface Props {
+  status: ProductStatus | 'promo';
+  /** Libellé personnalisé, ex. « -15 % » pour une offre spéciale. */
+  label?: string;
+}
+const { status, label } = Astro.props;
+const labels: Record<ProductStatus | 'promo', string> = {
+  nouveaute: 'Nouveauté',
+  'sur-commande': 'Sur commande',
+  'piece-unique': 'Pièce unique',
+  promo: 'Offre',
+};
+---
+
+<span class:list={['tag', `tag--${status}`]}>{label ?? labels[status]}</span>
+
+<style>
+  .tag {
+    display: inline-block; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.3rem 0.55rem; background: var(--paper); color: var(--ink); line-height: 1;
+  }
+  .tag--nouveaute { background: var(--accent); color: var(--ink); }
+  .tag--piece-unique { background: var(--ink); color: var(--paper); }
+  .tag--promo { background: var(--accent-ink); color: var(--paper); }
+</style>

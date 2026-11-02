@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { site } from '../config/site';
+import { shopPaths } from '../lib/catalogue';
+
+/** Chaque bloc affiche le texte confirmé par la boutique (src/config/site.ts) ou un repère « à confirmer ». */
+const blocks = [
+  {
+    title: 'Livraison',
+    text: site.delivery.text,
+    fallback: 'Zones desservies, délais et frais de livraison : à confirmer par la boutique. En attendant, tout se règle dans la conversation WhatsApp au moment de la commande.',
+  },
+  {
+    title: 'Retrait en boutique',
+    text: site.address ? `Retrait possible en boutique : ${site.address}, ${site.city}. ${site.hours ? `Horaires : ${site.hours}.` : ''}` : '',
+    fallback: `Retrait possible en boutique à ${site.city}. Adresse et horaires : à confirmer.`,
+  },
+  {
+    title: 'Règlement',
+    text: site.delivery.payment,
+    fallback: 'Aucun paiement en ligne sur ce site : le mode de règlement (à la livraison, Mobile Money…) est convenu avec la boutique sur WhatsApp. Modalités exactes à confirmer.',
+  },
+  {
+    title: 'Échanges et retours',
+    text: site.delivery.returns,
+    fallback: 'Conditions d’échange (délai, état de la pièce, pièces sur commande) : à confirmer par la boutique.',
+  },
+  {
+    title: 'Retouches',
+    text: site.delivery.alterations,
+    fallback: 'Ourlet, cintrage, longueur de manche : possibilités et délais à confirmer par la boutique.',
+  },
+];
+---
+
+<Base title="Livraison & retours" description="Livraison, retrait en boutique, règlement, échanges et retouches à La Chemise Africaine." current="livraison">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow eyebrow--accent">Livraison & retours</p>
+        <h1 class="title-xl">Comment vos pièces arrivent jusqu’à vous</h1>
+        <p class="lede">Commande sur WhatsApp, livraison ou retrait en boutique, règlement convenu ensemble : voici les règles de la maison.</p>
+      </header>
+
+      <div class="blocks">
+        {blocks.map((b) => (
+          <article class:list={['block', { 'block--pending': !b.text }]}>
+            <h2 class="block__title">{b.title}</h2>
+            <p class="block__text">{b.text || b.fallback}</p>
+            {!b.text && <p class="block__flag eyebrow">À confirmer par la boutique</p>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper-2">
+    <div class="container cta">
+      <p class="eyebrow">Une question sur une commande ?</p>
+      <h2 class="title-lg">Écrivez-nous, on vous répond en direct.</h2>
+      <div class="cta__actions">
+        <WhatsAppButton label="Écrire sur WhatsApp" />
+        <a class="link-underline" href={shopPaths.howToOrder}>Comment commander</a>
+        <a class="link-underline" href={shopPaths.faq}>Questions fréquentes</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-10); max-width: 52rem; }
+  .blocks { display: grid; gap: var(--s-4); }
+  .block { display: grid; gap: var(--s-2); padding: var(--s-6); border: 1px solid var(--line); }
+  .block--pending { border-style: dashed; }
+  .block__title { font-size: var(--fs-md); }
+  .block__text { color: var(--ink-70); max-width: 60ch; }
+  .block__flag { color: var(--accent-ink); margin-top: var(--s-2); }
+  .cta { display: grid; gap: var(--s-4); justify-items: start; max-width: 44rem; }
+  .cta__actions { display: flex; flex-wrap: wrap; gap: var(--s-6); align-items: center; font-size: var(--fs-sm); }
+  @media (min-width: 960px) { .blocks { grid-template-columns: repeat(2, 1fr); } .blocks > :first-child { grid-column: 1 / -1; } }
+</style>

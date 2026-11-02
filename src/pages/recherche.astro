@@ -1,0 +1,89 @@
+---
+import { withBase } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import { products, shopPaths } from '../lib/catalogue';
+---
+
+<Base title="Recherche" description="Trouvez une pièce, un créateur ou une matière dans le catalogue." current="recherche">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow">Recherche</p>
+        <h1 class="title-xl">Que cherchez-vous&nbsp;?</h1>
+        <form class="form" action={shopPaths.search} method="get" role="search" data-search-form>
+          <label class="visually-hidden" for="q">Rechercher</label>
+          <input class="form__input" id="q" name="q" type="search" placeholder="Chemise, robe, wax, Kofi Mensah, Sénégal…" autocomplete="off" autofocus data-search-q />
+          <button class="form__submit" type="submit">Rechercher</button>
+        </form>
+        <p class="result eyebrow" data-search-result aria-live="polite">Toutes les pièces du catalogue</p>
+      </header>
+
+      <div data-search-grid>
+        <ProductGrid products={products} eagerCount={4} emptyText="Aucune pièce ne correspond à cette recherche. Essayez un autre mot, ou écrivez-nous sur WhatsApp : la boutique trouve pour vous." />
+      </div>
+      <p class="hint muted">Astuce : vous pouvez chercher par catégorie (<a class="link-underline" href={withBase('/catalogue/femme/')}>femme</a>, homme, accessoires), par créateur, par pays ou par matière.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-4); margin-bottom: var(--s-8); }
+  .form { display: flex; gap: var(--s-3); min-width: 0; width: 100%; max-width: 40rem; margin-top: var(--s-2); }
+  .form__input {
+    flex: 1 1 0; width: 0; min-width: 0; font: inherit; font-size: var(--fs-md); color: var(--ink); background: transparent;
+    border: 0; border-bottom: 1px solid var(--ink); padding: var(--s-3) 0;
+  }
+  .form__input::placeholder { color: var(--ink-40); }
+  .form__submit {
+    font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: var(--s-3) var(--s-5); background: var(--ink); color: var(--paper); transition: background 0.25s var(--ease);
+  }
+  .form__submit:hover { background: var(--accent); }
+  .hint { font-size: var(--fs-sm); margin-top: var(--s-10); }
+</style>
+
+<script>
+  import { matches, normalize } from '../lib/text';
+
+  const form = document.querySelector<HTMLFormElement>('[data-search-form]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-q]');
+  const result = document.querySelector<HTMLElement>('[data-search-result]');
+  const grid = document.querySelector<HTMLElement>('[data-search-grid]');
+  const empty = grid?.querySelector<HTMLElement>('[data-grid-empty]');
+  const cards = grid?.querySelectorAll<HTMLElement>('[data-search]') ?? [];
+
+  const apply = (raw: string, pushUrl: boolean) => {
+    const q = normalize(raw);
+    let n = 0;
+    cards.forEach((card) => {
+      const show = !q || matches(card.dataset.search ?? '', q);
+      card.hidden = !show;
+      if (show) n++;
+    });
+    if (empty) empty.hidden = n > 0;
+    if (result) {
+      result.textContent = !q
+        ? 'Toutes les pièces du catalogue'
+        : n === 0 ? `Aucun résultat pour « ${raw.trim()} »` : `${n} résultat${n > 1 ? 's' : ''} pour « ${raw.trim()} »`;
+    }
+    document.title = q ? `Recherche : ${raw.trim()}` : document.title;
+    if (pushUrl) {
+      const url = new URL(window.location.href);
+      if (q) url.searchParams.set('q', raw.trim());
+      else url.searchParams.delete('q');
+      history.replaceState(null, '', url);
+    }
+  };
+
+  if (input) {
+    const initial = new URL(window.location.href).searchParams.get('q') ?? '';
+    input.value = initial;
+    apply(initial, false);
+    input.addEventListener('input', () => apply(input.value, true));
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      apply(input.value, true);
+    });
+  }
+</script>

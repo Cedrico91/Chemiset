@@ -1,0 +1,280 @@
+---
+import { withBase } from '../lib/url';
+import { site } from '../config/site';
+import { promoProducts, shopPaths } from '../lib/catalogue';
+import { buildOrderMessage, buildWaLink, hasWhatsApp } from '../lib/whatsapp';
+import Brand from './Brand.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+
+const nav = [
+  { label: 'Nouveautés', href: shopPaths.newArrivals, key: 'nouveautes' },
+  { label: 'Chemises', href: shopPaths.shirts, key: 'chemises' },
+  { label: 'Femme', href: withBase('/catalogue/femme/'), key: 'femme' },
+  { label: 'Homme', href: withBase('/catalogue/homme/'), key: 'homme' },
+  { label: 'Accessoires', href: withBase('/catalogue/accessoires/'), key: 'accessoires' },
+  { label: 'Collections', href: withBase('/collections/'), key: 'collections' },
+  { label: 'Créateurs', href: withBase('/createurs/'), key: 'createurs' },
+  ...(promoProducts().length ? [{ label: 'Offres', href: shopPaths.offers, key: 'offres' }] : []),
+];
+const help = [
+  { label: 'Guide des tailles', href: shopPaths.sizeGuide, key: 'guide-des-tailles' },
+  { label: 'Livraison & retours', href: shopPaths.delivery, key: 'livraison' },
+  { label: 'La boutique', href: shopPaths.about, key: 'a-propos' },
+];
+const waHref = hasWhatsApp() ? buildWaLink(site.whatsapp, buildOrderMessage()) : undefined;
+---
+
+<header class="header" data-header>
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <p class="topbar__claim">{site.claim}</p>
+      <ul class="topbar__links">
+        <li>
+          {waHref ? (
+            <a href={waHref} target="_blank" rel="noopener">Commande sur WhatsApp</a>
+          ) : (
+            <a href={shopPaths.howToOrder}>Commande sur WhatsApp</a>
+          )}
+        </li>
+        {help.map((h) => <li><a href={h.href} class:list={{ 'is-current': current === h.key }}>{h.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <div class="container navbar__inner">
+      <Brand />
+
+      <nav class="nav" aria-label="Navigation principale">
+        <ul class="nav__list">
+          {nav.map((item) => (
+            <li>
+              <a href={item.href} class:list={['nav__link', { 'is-current': current === item.key, 'nav__link--accent': item.key === 'offres' }]} aria-current={current === item.key ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="header__actions">
+        <div class="header__cta"><WhatsAppButton label="Commander" variant="outline" size="sm" /></div>
+
+        <button class="icon icon--search" type="button" aria-expanded="false" aria-controls="recherche-barre" data-search-toggle title="Rechercher">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span class="visually-hidden">Rechercher</span>
+        </button>
+
+        <a class:list={['icon', { 'is-current': current === 'favoris' }]} href={shopPaths.wishlist} title="Mes favoris">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 4.6 13.3a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9a4.6 4.6 0 0 1 6.5 6.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span class="icon__badge" data-count="wish" hidden>0</span>
+          <span class="visually-hidden">Mes favoris</span>
+        </a>
+
+        <a class:list={['icon', { 'is-current': current === 'panier' }]} href={shopPaths.cart} title="Mon panier">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l1 12H5L6 8Z M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span class="icon__badge" data-count="cart" hidden>0</span>
+          <span class="visually-hidden">Mon panier</span>
+        </a>
+
+        <button class="burger" type="button" aria-expanded="false" aria-controls="menu-mobile" data-burger>
+          <span class="burger__bar"></span>
+          <span class="burger__bar"></span>
+          <span class="visually-hidden">Ouvrir le menu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="search" id="recherche-barre" data-search hidden>
+    <form class="container search__form" action={shopPaths.search} method="get" role="search">
+      <label class="visually-hidden" for="recherche-q">Rechercher une pièce ou un créateur</label>
+      <input class="search__input" id="recherche-q" name="q" type="search" placeholder="Rechercher une pièce, un créateur, une matière…" autocomplete="off" data-search-input />
+      <button class="search__submit" type="submit">Rechercher</button>
+    </form>
+  </div>
+
+  <div class="menu" id="menu-mobile" data-menu hidden>
+    <form class="menu__search" action={shopPaths.search} method="get" role="search">
+      <label class="visually-hidden" for="recherche-q-mobile">Rechercher</label>
+      <input class="search__input" id="recherche-q-mobile" name="q" type="search" placeholder="Rechercher…" autocomplete="off" />
+      <button class="search__submit" type="submit">OK</button>
+    </form>
+    <ul class="menu__list">
+      {nav.map((item, i) => (
+        <li style={`--i:${i}`}>
+          <a href={item.href} class:list={['menu__link', { 'is-current': current === item.key }]}>{item.label}</a>
+        </li>
+      ))}
+    </ul>
+    <ul class="menu__help">
+      {help.map((h) => <li><a href={h.href}>{h.label}</a></li>)}
+      <li><a href={shopPaths.faq}>Questions fréquentes</a></li>
+      <li><a href={shopPaths.wishlist}>Mes favoris</a></li>
+      <li><a href={shopPaths.cart}>Mon panier</a></li>
+    </ul>
+    <div class="menu__foot">
+      <WhatsAppButton label="Commander sur WhatsApp" variant="accent" full />
+      <p class="eyebrow">{site.city}</p>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    overflow-x: clip;
+    color: var(--ink); background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    transition: box-shadow 0.3s var(--ease);
+  }
+  .header.is-scrolled { box-shadow: 0 10px 30px rgb(0 0 0 / 0.06); }
+
+  .topbar { height: var(--topbar-h); background: var(--ink); color: var(--paper); font-size: var(--fs-xs); }
+  .topbar__inner { height: 100%; display: flex; align-items: center; justify-content: center; gap: var(--s-8); }
+  .topbar__claim { letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar__links { display: none; gap: var(--s-6); }
+  .topbar__links a { opacity: 0.85; letter-spacing: 0.04em; }
+  .topbar__links a:hover, .topbar__links a.is-current { opacity: 1; color: var(--accent); }
+  .topbar__links li:first-child a { color: var(--accent); opacity: 1; font-weight: 600; }
+
+  .navbar { height: var(--navbar-h); }
+  .navbar__inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+
+  .nav { display: none; }
+  .nav__list { display: flex; gap: var(--s-5); }
+  .nav__link {
+    font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.02em; padding-block: var(--s-2); white-space: nowrap;
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-size: 0% 2px; background-repeat: no-repeat; background-position: 0 100%;
+    transition: background-size 0.3s var(--ease);
+  }
+  .nav__link:hover, .nav__link.is-current { background-size: 100% 2px; }
+  .nav__link--accent { color: var(--accent-ink); }
+
+  .header__actions { display: flex; align-items: center; gap: 0; flex: none; }
+  .header__cta { display: none; margin-right: var(--s-3); }
+
+  .icon { position: relative; width: 36px; height: 40px; display: grid; place-items: center; color: inherit; }
+  .icon svg { width: 22px; height: 22px; }
+  .icon:hover, .icon.is-current { color: var(--accent-ink); }
+  .icon__badge {
+    position: absolute; top: 4px; right: 2px; min-width: 16px; height: 16px; padding: 0 4px;
+    display: grid; place-items: center; font-size: 0.6rem; font-weight: 700; line-height: 1;
+    background: var(--accent); color: var(--ink); border-radius: 999px;
+  }
+  .icon__badge[hidden] { display: none; }
+  .icon--search { display: none; }
+
+  .burger { width: 36px; height: 40px; display: grid; place-items: center; gap: 0; position: relative; margin-left: var(--s-1); }
+  .burger__bar { position: absolute; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s var(--ease); }
+  .burger__bar:first-child { transform: translateY(-4px); }
+  .burger__bar:nth-child(2) { transform: translateY(4px); }
+  .is-open .burger__bar:first-child { transform: rotate(45deg); }
+  .is-open .burger__bar:nth-child(2) { transform: rotate(-45deg); }
+
+  .search { background: var(--paper); color: var(--ink); border-top: 1px solid var(--line); box-shadow: 0 20px 40px rgb(0 0 0 / 0.08); }
+  .search[hidden] { display: none; }
+  .search__form { display: flex; gap: var(--s-3); padding-block: var(--s-4); }
+  .search__input {
+    flex: 1 1 0; width: 0; min-width: 0; font: inherit; font-size: var(--fs-md); color: var(--ink); background: transparent;
+    border: 0; border-bottom: 1px solid var(--ink); padding: var(--s-2) 0;
+  }
+  .search__input::placeholder { color: var(--ink-40); }
+  .search__submit {
+    font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: var(--s-2) var(--s-4); background: var(--ink); color: var(--paper);
+  }
+  .search__submit:hover { background: var(--accent); color: var(--ink); }
+
+  .menu {
+    position: fixed; inset: var(--header-h) 0 0 0; background: var(--paper); color: var(--ink);
+    padding: var(--s-6) var(--gutter) var(--s-8);
+    display: flex; flex-direction: column; gap: var(--s-6);
+    overflow-y: auto;
+  }
+  .menu[hidden] { display: none; }
+  .menu__search { display: flex; gap: var(--s-3); }
+  .menu__list { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .menu__list li { border-bottom: 1px solid var(--line); animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
+  .menu__link { display: block; padding: var(--s-3) 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+  .menu__link.is-current { color: var(--accent-ink); }
+  .menu__help { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3) var(--s-6); font-size: var(--fs-sm); color: var(--ink-70); }
+  .menu__foot { margin-top: auto; display: grid; gap: var(--s-4); }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  @media (min-width: 960px) {
+    .topbar__inner { justify-content: space-between; }
+    .topbar__links { display: flex; }
+    .nav { display: block; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+    .nav::-webkit-scrollbar { display: none; }
+    .header__actions { gap: var(--s-1); }
+    .header__cta { display: inline-flex; }
+    .icon--search { display: grid; }
+    .burger, .menu { display: none !important; }
+  }
+  @media (min-width: 1280px) { .nav__list { gap: var(--s-6); } .navbar__inner { gap: var(--s-8); } }
+</style>
+
+<script>
+  import { STORE_EVENT, cartCount, getWishlist } from '../scripts/store';
+
+  const header = document.querySelector<HTMLElement>('header[data-header]');
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const searchToggle = document.querySelector<HTMLButtonElement>('[data-search-toggle]');
+  const search = document.querySelector<HTMLElement>('[data-search]');
+  const searchInput = search?.querySelector<HTMLInputElement>('[data-search-input]');
+
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  const setSearch = (open: boolean) => {
+    if (!search || !searchToggle || !header) return;
+    search.hidden = !open;
+    searchToggle.setAttribute('aria-expanded', String(open));
+    header.classList.toggle('is-searching', open);
+    if (open) searchInput?.focus();
+  };
+  searchToggle?.addEventListener('click', () => setSearch(!!search?.hidden));
+
+  if (burger && menu && header) {
+    const setOpen = (open: boolean) => {
+      burger.setAttribute('aria-expanded', String(open));
+      menu.hidden = !open;
+      header.classList.toggle('is-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    burger.addEventListener('click', () => setOpen(menu.hidden));
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (!menu.hidden) setOpen(false);
+      if (search && !search.hidden) setSearch(false);
+    });
+    window.matchMedia('(min-width: 960px)').addEventListener('change', (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+
+  const counters = document.querySelectorAll<HTMLElement>('[data-count]');
+  const refresh = () => {
+    const cart = cartCount();
+    const wish = getWishlist().length;
+    counters.forEach((el) => {
+      const n = el.dataset.count === 'cart' ? cart : wish;
+      el.textContent = String(n);
+      el.hidden = n === 0;
+    });
+  };
+  refresh();
+  window.addEventListener(STORE_EVENT, refresh);
+  window.addEventListener('storage', refresh);
+</script>

@@ -1,0 +1,74 @@
+---
+import { withBase } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import { products } from '../lib/catalogue';
+---
+
+<Base title="Mes favoris" description="Les pièces que vous avez mises de côté." current="favoris">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow">Favoris</p>
+        <h1 class="title-xl">Les pièces mises de côté</h1>
+        <p class="lede">Un cœur sur une pièce, et elle vous attend ici. Les favoris restent dans votre navigateur, sans compte à créer.</p>
+      </header>
+
+      <div class="wish" data-wish-page>
+        <div class="wish__empty" data-wish-empty>
+          <p class="wish__empty-title">Aucun favori pour le moment.</p>
+          <p class="muted">Cliquez sur le cœur d’une pièce du catalogue pour la retrouver ici.</p>
+          <a class="btn-solid" href={withBase('/catalogue/')}>Voir le catalogue</a>
+        </div>
+        <p class="wish__count eyebrow" data-wish-count hidden></p>
+        <div class="wish__grid" data-wish-grid>
+          <ProductGrid products={products} emptyText="" />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-8); }
+  .wish__empty { display: grid; gap: var(--s-3); justify-items: start; padding: var(--s-10) 0; border-top: 1px solid var(--line); }
+  .wish__empty[hidden] { display: none; }
+  .wish__empty-title { font-family: var(--font-display); font-size: var(--fs-lg); }
+  .wish__count { margin-bottom: var(--s-6); }
+  .wish__count[hidden] { display: none; }
+  .btn-solid {
+    margin-top: var(--s-3); display: inline-flex; padding: 0.9rem 1.5rem; background: var(--ink); color: var(--paper);
+    font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1; transition: background 0.25s var(--ease);
+  }
+  .btn-solid:hover { background: var(--accent); }
+  /* Toutes les cartes sont rendues au build ; seules celles en favoris sont affichées. */
+  .wish__grid :global([data-slug]) { display: none; }
+  .wish__grid :global([data-slug].is-wished) { display: block; }
+  .wish__grid :global([data-grid-empty]) { display: none; }
+</style>
+
+<script>
+  import { STORE_EVENT, getWishlist } from '../scripts/store';
+
+  const page = document.querySelector<HTMLElement>('[data-wish-page]');
+  if (page) {
+    const empty = page.querySelector<HTMLElement>('[data-wish-empty]')!;
+    const count = page.querySelector<HTMLElement>('[data-wish-count]')!;
+    const cards = page.querySelectorAll<HTMLElement>('[data-wish-grid] [data-slug]');
+    const render = () => {
+      const wished = getWishlist().map((p) => p.slug);
+      let n = 0;
+      cards.forEach((card) => {
+        const on = wished.includes(card.dataset.slug ?? '');
+        card.classList.toggle('is-wished', on);
+        if (on) n++;
+      });
+      empty.hidden = n > 0;
+      count.hidden = n === 0;
+      count.textContent = n === 1 ? '1 pièce en favoris' : `${n} pièces en favoris`;
+    };
+    render();
+    window.addEventListener(STORE_EVENT, render);
+    window.addEventListener('storage', render);
+  }
+</script>

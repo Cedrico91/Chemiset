@@ -1,0 +1,76 @@
+---
+/**
+ * Bloc services (façon Suitsupply). Rien d'inventé : les conditions précises viennent de
+ * src/config/site.ts et s'affichent « à confirmer » tant que la boutique ne les a pas transmises.
+ */
+import { site } from '../config/site';
+import { shopPaths } from '../lib/catalogue';
+import { orLabel } from '../lib/format';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+
+const services = [
+  {
+    title: 'Conseil sur WhatsApp',
+    text: 'Taille, coloris, association de pièces : la boutique vous répond en direct.',
+    href: shopPaths.howToOrder,
+    icon: 'M4 5h16v11H9l-5 4V5Z',
+  },
+  {
+    title: 'Guide des tailles',
+    text: 'Trois mesures suffisent pour choisir sans hésiter.',
+    href: shopPaths.sizeGuide,
+    icon: 'M3 8h18v8H3V8Zm3 0v3m3-3v5m3-5v3m3-3v5m3-5v3',
+  },
+  {
+    title: 'Sur commande et sur mesure',
+    text: 'Les pièces de cérémonie sont réalisées à vos mesures, sur commande.',
+    href: shopPaths.faq,
+    icon: 'M6 20 18 4M8 4l10 16M4 12h16',
+  },
+  {
+    title: 'Retrait en boutique',
+    text: `${site.city}. ${orLabel(site.address, 'Adresse à confirmer')}.`,
+    href: shopPaths.contact,
+    icon: 'M4 10 12 4l8 6v10H4V10Zm5 10v-6h6v6',
+  },
+  {
+    title: 'Livraison et retours',
+    text: site.delivery.text || 'Conditions à confirmer avec la boutique.',
+    href: shopPaths.delivery,
+    icon: 'M3 7h11v9H3V7Zm11 3h4l3 3v3h-7v-6ZM6 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm11 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z',
+  },
+];
+---
+
+<ul class:list={['services', { 'services--compact': compact }]}>
+  {services.map((s) => (
+    <li>
+      <a class="service" href={s.href}>
+        <svg class="service__icon" viewBox="0 0 24 24" aria-hidden="true"><path d={s.icon} fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span class="service__body">
+          <strong class="service__title">{s.title}</strong>
+          {!compact && <span class="service__text">{s.text}</span>}
+        </span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .services { display: grid; gap: var(--s-4); grid-template-columns: 1fr; }
+  .service { display: flex; gap: var(--s-4); align-items: flex-start; padding: var(--s-5); border: 1px solid var(--line); height: 100%; transition: border-color 0.3s var(--ease), background 0.3s var(--ease); }
+  .service:hover { border-color: var(--ink); }
+  .service__icon { width: 28px; height: 28px; flex: none; color: var(--accent-ink); }
+  .service__body { display: grid; gap: var(--s-1); }
+  .service__title { font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.02em; }
+  .service__text { font-size: var(--fs-sm); color: var(--ink-70); }
+  .services--compact { gap: var(--s-2); }
+  .services--compact .service { padding: var(--s-3) var(--s-4); border: 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .services--compact .service__icon { width: 20px; height: 20px; }
+  @media (min-width: 640px) { .services:not(.services--compact) { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .services:not(.services--compact) { grid-template-columns: repeat(5, 1fr); } }
+</style>

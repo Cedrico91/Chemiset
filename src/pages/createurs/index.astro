@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import DesignerIndex from '../../components/DesignerIndex.astro';
+import { designers } from '../../lib/catalogue';
+const countries = [...new Set(designers.map((d) => d.country))];
+---
+
+<Base title="Nos créateurs" description="Les stylistes dont La Chemise Africaine présente les créations : qui ils sont, d’où ils viennent, ce qu’ils font." current="createurs">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow">Nos créateurs</p>
+        <h1 class="title-xl">{designers.length} stylistes, {countries.length} pays, un seul comptoir</h1>
+        <p class="lede">Chaque pièce de la boutique porte le nom de celui ou celle qui l’a dessinée. Voici qui ils sont.</p>
+      </header>
+      <DesignerIndex designers={designers} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-12); max-width: 50rem; }
+</style>

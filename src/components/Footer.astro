@@ -1,0 +1,108 @@
+---
+import { withBase } from '../lib/url';
+import { site } from '../config/site';
+import { orLabel } from '../lib/format';
+import { categories, promoProducts, shopPaths } from '../lib/catalogue';
+import Brand from './Brand.astro';
+import Newsletter from './Newsletter.astro';
+
+const year = new Date().getFullYear();
+const socials = Object.entries(site.social).filter(([, url]) => url);
+const hasOffers = promoProducts().length > 0;
+---
+
+<footer class="footer">
+  <div class="container">
+    <Newsletter />
+
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <Brand variant="footer" />
+        <p class="footer__claim">{site.claim}</p>
+        <p class="footer__script script">{site.positioning}</p>
+      </div>
+
+      <div>
+        <p class="eyebrow footer__title">Contact</p>
+        <ul class="footer__links">
+          <li>WhatsApp : {site.whatsapp ? `+${site.whatsapp}` : 'à confirmer'}</li>
+          <li>{site.email ? <a class="link-underline" href={`mailto:${site.email}`}>{site.email}</a> : 'E-mail à confirmer'}</li>
+          <li>{orLabel(site.address, 'Adresse à confirmer')}, {site.city}</li>
+          <li>Horaires : {orLabel(site.hours, 'à confirmer')}</li>
+          {socials.length > 0 && (
+            <li class="footer__social">
+              {socials.map(([name, url]) => (
+                <a class="link-underline" href={url} target="_blank" rel="noopener">{name}</a>
+              ))}
+            </li>
+          )}
+        </ul>
+      </div>
+
+      <nav aria-label="Boutique">
+        <p class="eyebrow footer__title">Boutique</p>
+        <ul class="footer__links">
+          <li><a class="link-underline" href={shopPaths.newArrivals}>Nouveautés</a></li>
+          <li><a class="link-underline" href={shopPaths.shirts}>Chemises</a></li>
+          {categories.map((c) => (
+            <li><a class="link-underline" href={withBase(`/catalogue/${c.id}/`)}>{c.label}</a></li>
+          ))}
+          <li><a class="link-underline" href={withBase("/collections/")}>Collections</a></li>
+          {hasOffers && <li><a class="link-underline" href={shopPaths.offers}>Offres spéciales</a></li>}
+        </ul>
+      </nav>
+
+      <nav aria-label="Aide">
+        <p class="eyebrow footer__title">Aide</p>
+        <ul class="footer__links">
+          <li><a class="link-underline" href={shopPaths.howToOrder}>Comment commander</a></li>
+          <li><a class="link-underline" href={shopPaths.sizeGuide}>Guide des tailles</a></li>
+          <li><a class="link-underline" href={shopPaths.delivery}>Livraison & retours</a></li>
+          <li><a class="link-underline" href={shopPaths.faq}>Questions fréquentes</a></li>
+          <li><a class="link-underline" href={shopPaths.cart}>Mon panier</a></li>
+          <li><a class="link-underline" href={shopPaths.wishlist}>Mes favoris</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="La maison">
+        <p class="eyebrow footer__title">La maison</p>
+        <ul class="footer__links">
+          <li><a class="link-underline" href={shopPaths.about}>Notre histoire</a></li>
+          <li><a class="link-underline" href={withBase("/createurs/")}>Nos créateurs</a></li>
+          <li><a class="link-underline" href={shopPaths.contact}>Nous trouver</a></li>
+          <li><a class="link-underline" href={shopPaths.legal}>Mentions légales</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {year} {site.name}. Tous droits réservés.</p>
+      {site.demo && (
+        <p class="footer__demo">
+          Version de travail : pièces, prix et photos provisoires (visuels d’illustration Unsplash et Pexels) en attendant le catalogue de la boutique.
+          Panier et favoris sont conservés dans votre navigateur ; la commande se finalise sur WhatsApp.
+        </p>
+      )}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--ink); color: var(--paper); padding-block: var(--s-10) var(--s-8); margin-top: auto; }
+  .footer__grid { display: grid; gap: var(--s-10); grid-template-columns: 1fr; }
+  .footer__brand { display: grid; gap: var(--s-3); justify-items: start; }
+  .footer__claim { font-size: var(--fs-sm); opacity: 0.75; max-width: 28ch; }
+  .footer__script { font-size: 1.6rem; color: var(--accent); margin-top: var(--s-2); }
+  .footer__title { color: var(--paper); opacity: 0.55; margin-bottom: var(--s-4); }
+  .footer__links { display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
+  .footer__links a { opacity: 0.9; }
+  .footer__links a:hover { color: var(--accent); }
+  .footer__social { display: flex; gap: var(--s-4); text-transform: capitalize; margin-top: var(--s-2); }
+  .footer__bottom {
+    margin-top: var(--s-12); padding-top: var(--s-6); border-top: 1px solid rgb(255 255 255 / 0.15);
+    display: grid; gap: var(--s-3); font-size: var(--fs-xs); opacity: 0.6;
+  }
+  .footer__demo { max-width: 70ch; }
+  @media (min-width: 640px) { .footer__grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 960px) { .footer__grid { grid-template-columns: 1.5fr 1.1fr 0.9fr 0.9fr 0.9fr; } .footer__bottom { grid-template-columns: auto 1fr; justify-content: space-between; } .footer__demo { justify-self: end; text-align: right; } }
+</style>

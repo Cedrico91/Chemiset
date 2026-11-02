@@ -1,0 +1,24 @@
+---
+import { site } from '../config/site';
+interface Props { label?: string; }
+const { label = 'Plan d’accès à intégrer dès que l’adresse est confirmée' } = Astro.props;
+---
+
+<div class="map" role="img" aria-label={label}>
+  <div class="map__grid" aria-hidden="true"></div>
+  <div class="map__pin" aria-hidden="true"></div>
+  <p class="map__label">
+    <span class="eyebrow">Plan d’accès</span>
+    <span class="serif-italic">{site.city}</span>
+    <span class="map__hint">{label}</span>
+  </p>
+</div>
+
+<style>
+  .map { position: relative; aspect-ratio: 16 / 10; background: var(--paper-2); overflow: hidden; display: grid; place-items: center; }
+  .map__grid { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 48px 48px; opacity: 0.7; }
+  .map__pin { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 10px rgb(251 115 7 / 0.18); }
+  .map__label { position: relative; margin-top: 5rem; display: grid; gap: var(--s-1); text-align: center; }
+  .map__label .serif-italic { font-size: 1.5rem; }
+  .map__hint { font-size: var(--fs-xs); color: var(--ink-40); max-width: 28ch; }
+</style>

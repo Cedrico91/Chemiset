@@ -1,0 +1,39 @@
+---
+import { withBase } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { promoProducts } from '../lib/catalogue';
+
+const offers = promoProducts();
+---
+
+<Base title="Offres spéciales" description="Les pièces en offre spéciale, à prix réduit pour une durée limitée." current="offres">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow eyebrow--accent">Offres spéciales</p>
+        <h1 class="title-xl">Quelques pièces à prix doux</h1>
+        <p class="lede">Fins de série et pièces de la saison passée, dans la limite des tailles disponibles. Le prix barré est le prix habituel de la pièce.</p>
+      </header>
+      <ProductGrid products={offers} eagerCount={4} emptyText="Aucune offre en cours. Revenez bientôt, ou inscrivez-vous à la newsletter pour être prévenu." />
+    </div>
+  </section>
+
+  <section class="section section--paper-2">
+    <div class="container cta">
+      <p class="eyebrow">Une question sur une offre ?</p>
+      <h2 class="title-lg">Disponibilité des tailles, retouches, livraison : demandez-nous.</h2>
+      <div class="cta__actions">
+        <WhatsAppButton label="Écrire sur WhatsApp" />
+        <a class="link-underline" href={withBase('/catalogue/')}>Voir tout le catalogue</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-8); }
+  .cta { display: grid; gap: var(--s-4); justify-items: start; max-width: 44rem; }
+  .cta__actions { display: flex; flex-wrap: wrap; gap: var(--s-6); align-items: center; margin-top: var(--s-2); font-size: var(--fs-sm); }
+</style>

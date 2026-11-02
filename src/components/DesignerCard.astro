@@ -1,0 +1,37 @@
+---
+import { PLACEHOLDER } from '../lib/url';
+import type { Designer } from '../data/types';
+import { countByDesigner, designerPath } from '../lib/catalogue';
+
+interface Props { designer: Designer; }
+const { designer } = Astro.props;
+const count = countByDesigner(designer.slug);
+---
+
+<a class="dcard" href={designerPath(designer)}>
+  <div class="img-frame img-frame--4x5">
+    <img
+      src={designer.portrait.src}
+      alt={designer.portrait.alt}
+      width={designer.portrait.width}
+      height={designer.portrait.height}
+      loading="lazy"
+      decoding="async"
+      onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`}
+    />
+  </div>
+  <div class="dcard__body">
+    <h3 class="dcard__name">{designer.name}</h3>
+    <p class="eyebrow">{designer.country}{designer.city ? ` · ${designer.city}` : ''}</p>
+    <p class="dcard__tagline serif-italic">{designer.tagline}</p>
+    <p class="dcard__count">{count} pièce{count > 1 ? 's' : ''} en boutique</p>
+  </div>
+</a>
+
+<style>
+  .dcard { display: block; }
+  .dcard__body { padding-top: var(--s-3); display: grid; gap: var(--s-1); }
+  .dcard__name { font-size: 1.5rem; }
+  .dcard__tagline { font-size: 1.1rem; color: var(--ink-70); margin-top: var(--s-1); }
+  .dcard__count { font-size: var(--fs-xs); color: var(--ink-40); }
+</style>

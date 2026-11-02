@@ -1,0 +1,53 @@
+---
+import { withBase } from '../lib/url';
+import '@fontsource-variable/inter';
+import '@fontsource/kaushan-script';
+import '../styles/global.css';
+
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import DemoRibbon from '../components/DemoRibbon.astro';
+import DemoModal from '../components/DemoModal.astro';
+import Toast from '../components/Toast.astro';
+import { site } from '../config/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  current?: string;
+}
+const { title, description, image, current } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href={withBase('/brand/favicon-64.png')} type="image/png" sizes="64x64" />
+    <link rel="apple-touch-icon" href={withBase('/brand/emblem-square.png')} />
+    <Seo title={title} description={description} image={image} />
+  </head>
+  <body>
+    <a class="skip" href="#contenu">Aller au contenu</a>
+    <Header current={current} />
+    <main id="contenu">
+      <slot />
+    </main>
+    <Footer />
+    {site.demo && <DemoRibbon />}
+    <DemoModal />
+    <Toast />
+  </body>
+</html>
+
+<style is:global>
+  .skip {
+    position: absolute; left: var(--s-4); top: -100px; z-index: 100;
+    background: var(--ink); color: var(--paper); padding: var(--s-2) var(--s-4);
+  }
+  .skip:focus { top: var(--s-4); }
+  main { padding-top: var(--header-h); }
+</style>

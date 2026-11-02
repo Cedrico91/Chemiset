@@ -1,0 +1,68 @@
+---
+import type { CategoryId, Collection } from '../data/types';
+import { categories, categoryPath, countByCategory, products } from '../lib/catalogue';
+
+interface Props {
+  active: CategoryId | 'tous';
+  collections: Collection[];
+}
+const { active, collections } = Astro.props;
+const tabs = [{ id: 'tous' as const, label: 'Tout', count: products.length }, ...categories.map((c) => ({ id: c.id, label: c.label, count: countByCategory(c.id) }))];
+---
+
+<div class="filter" data-filter>
+  <nav class="filter__tabs" aria-label="Catégories">
+    {tabs.map((t) => (
+      <a href={categoryPath(t.id)} class:list={['filter__tab', { 'is-active': t.id === active }]} aria-current={t.id === active ? 'page' : undefined}>
+        {t.label} <sup>{t.count}</sup>
+      </a>
+    ))}
+  </nav>
+  <label class="filter__select">
+    <span class="eyebrow">Collection</span>
+    <select data-filter-collection>
+      <option value="">Toutes</option>
+      {collections.map((c) => <option value={c.slug}>{c.title}</option>)}
+    </select>
+  </label>
+</div>
+
+<style>
+  .filter { display: grid; gap: var(--s-6); padding-block: var(--s-6); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: var(--s-10); }
+  .filter__tabs { display: flex; gap: var(--s-6); overflow-x: auto; scrollbar-width: none; }
+  .filter__tabs::-webkit-scrollbar { display: none; }
+  .filter__tab { white-space: nowrap; font-size: var(--fs-sm); letter-spacing: 0.04em; padding-bottom: var(--s-1); color: var(--ink-70);
+    background-image: linear-gradient(var(--ink), var(--ink)); background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%; transition: background-size 0.3s var(--ease), color 0.3s var(--ease); }
+  .filter__tab sup { font-size: 0.6rem; color: var(--ink-40); margin-left: 2px; }
+  .filter__tab:hover, .filter__tab.is-active { color: var(--ink); background-size: 100% 1px; }
+  .filter__select { display: flex; align-items: center; gap: var(--s-3); }
+  .filter__select select { font: inherit; font-size: var(--fs-sm); background: transparent; border: 0; border-bottom: 1px solid var(--ink); padding: var(--s-1) 0; color: var(--ink); cursor: pointer; }
+  @media (min-width: 640px) { .filter { grid-template-columns: 1fr auto; align-items: center; } }
+</style>
+
+<script>
+  const select = document.querySelector<HTMLSelectElement>('[data-filter-collection]');
+  const grid = document.querySelector<HTMLElement>('[data-product-grid]');
+  const empty = document.querySelector<HTMLElement>('[data-grid-empty]');
+  if (select && grid) {
+    const apply = (value: string) => {
+      let visible = 0;
+      grid.querySelectorAll<HTMLElement>('[data-collection]').forEach((card) => {
+        const show = !value || card.dataset.collection === value;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+      if (empty) empty.hidden = visible > 0;
+      const url = new URL(window.location.href);
+      if (value) url.searchParams.set('collection', value);
+      else url.searchParams.delete('collection');
+      history.replaceState(null, '', url);
+    };
+    const initial = new URL(window.location.href).searchParams.get('collection') ?? '';
+    if (initial && [...select.options].some((o) => o.value === initial)) {
+      select.value = initial;
+      apply(initial);
+    }
+    select.addEventListener('change', () => apply(select.value));
+  }
+</script>

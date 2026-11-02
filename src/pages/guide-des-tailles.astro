@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { shopPaths } from '../lib/catalogue';
+
+/**
+ * Correspondances usuelles entre tailles internationales et tours de poitrine / taille / hanches.
+ * Ce sont des repères généraux : les coupes varient d'un créateur à l'autre, d'où l'invitation
+ * à écrire sur WhatsApp en cas de doute.
+ */
+const women = [
+  { intl: 'XS', fr: '34', chest: '78–82', waist: '60–64', hips: '86–90' },
+  { intl: 'S', fr: '36', chest: '82–86', waist: '64–68', hips: '90–94' },
+  { intl: 'M', fr: '38', chest: '86–90', waist: '68–72', hips: '94–98' },
+  { intl: 'L', fr: '40', chest: '90–94', waist: '72–76', hips: '98–102' },
+  { intl: 'XL', fr: '42', chest: '94–98', waist: '76–80', hips: '102–106' },
+  { intl: 'XXL', fr: '44', chest: '98–104', waist: '80–86', hips: '106–112' },
+];
+const men = [
+  { intl: 'S', fr: '46', chest: '88–92', waist: '76–80', collar: '37–38' },
+  { intl: 'M', fr: '48', chest: '92–96', waist: '80–84', collar: '39–40' },
+  { intl: 'L', fr: '50', chest: '96–100', waist: '84–88', collar: '41–42' },
+  { intl: 'XL', fr: '52', chest: '100–106', waist: '88–94', collar: '43–44' },
+  { intl: 'XXL', fr: '54', chest: '106–112', waist: '94–100', collar: '45–46' },
+];
+const steps = [
+  { title: 'Tour de poitrine', text: 'Mètre ruban à l’horizontale, au point le plus fort de la poitrine, sans serrer.' },
+  { title: 'Tour de taille', text: 'Au creux de la taille, là où le corps est le plus étroit, en respirant normalement.' },
+  { title: 'Tour de hanches', text: 'Au point le plus fort des hanches, pieds joints.' },
+  { title: 'Tour de cou (chemise homme)', text: 'À la base du cou, en glissant un doigt entre le ruban et la peau.' },
+];
+---
+
+<Base title="Guide des tailles" description="Comment prendre vos mesures et choisir votre taille pour les chemises, robes et ensembles de La Chemise Africaine." current="guide-des-tailles">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow eyebrow--accent">Guide des tailles</p>
+        <h1 class="title-xl">Trois mesures, et la bonne taille</h1>
+        <p class="lede">Prenez vos mesures en centimètres avec un mètre ruban, puis repérez votre taille dans les tableaux. En cas d’hésitation entre deux tailles, écrivez-nous : chaque créateur a sa coupe, et la boutique vous conseille pièce par pièce.</p>
+      </header>
+
+      <div class="layout">
+        <ol class="steps">
+          {steps.map((s, i) => (
+            <li>
+              <span class="steps__n">0{i + 1}</span>
+              <div><h2 class="steps__title">{s.title}</h2><p class="muted">{s.text}</p></div>
+            </li>
+          ))}
+        </ol>
+
+        <div class="tables">
+          <div class="table-wrap">
+            <h2 class="table-title">Femme</h2>
+            <table>
+              <thead><tr><th>Taille</th><th>FR</th><th>Poitrine (cm)</th><th>Taille (cm)</th><th>Hanches (cm)</th></tr></thead>
+              <tbody>{women.map((r) => <tr><td><strong>{r.intl}</strong></td><td>{r.fr}</td><td>{r.chest}</td><td>{r.waist}</td><td>{r.hips}</td></tr>)}</tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <h2 class="table-title">Homme</h2>
+            <table>
+              <thead><tr><th>Taille</th><th>FR</th><th>Poitrine (cm)</th><th>Taille (cm)</th><th>Cou (cm)</th></tr></thead>
+              <tbody>{men.map((r) => <tr><td><strong>{r.intl}</strong></td><td>{r.fr}</td><td>{r.chest}</td><td>{r.waist}</td><td>{r.collar}</td></tr>)}</tbody>
+            </table>
+          </div>
+          <p class="note muted">Repères indicatifs : les coupes varient selon les créateurs et les tissus (le wax ne s’étire pas, la maille un peu). Les pièces de cérémonie sont réalisées à vos mesures, sur commande.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper-2">
+    <div class="container cta">
+      <p class="eyebrow">Un doute ?</p>
+      <h2 class="title-lg">Envoyez vos mesures sur WhatsApp, la boutique choisit la taille avec vous.</h2>
+      <div class="cta__actions">
+        <WhatsAppButton label="Demander conseil" />
+        <a class="link-underline" href={shopPaths.faq}>Questions fréquentes</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-10); max-width: 52rem; }
+  .layout { display: grid; gap: var(--s-12); }
+  .steps { display: grid; gap: var(--s-6); align-content: start; }
+  .steps li { display: grid; grid-template-columns: 2.5rem 1fr; gap: var(--s-3); padding-top: var(--s-4); border-top: 1px solid var(--line); }
+  .steps__n { font-family: var(--font-script); font-size: 1.4rem; color: var(--accent-ink); line-height: 1; }
+  .steps__title { font-size: var(--fs-md); margin-bottom: var(--s-1); }
+  .tables { display: grid; gap: var(--s-8); }
+  .table-title { font-size: var(--fs-lg); margin-bottom: var(--s-3); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  th, td { text-align: left; padding: var(--s-3) var(--s-3); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-40); font-weight: 600; }
+  tbody tr:hover { background: var(--accent-soft); }
+  .note { font-size: var(--fs-sm); max-width: 60ch; }
+  .cta { display: grid; gap: var(--s-4); justify-items: start; max-width: 44rem; }
+  .cta__actions { display: flex; flex-wrap: wrap; gap: var(--s-6); align-items: center; font-size: var(--fs-sm); }
+  @media (min-width: 960px) { .layout { grid-template-columns: 0.8fr 1.2fr; gap: var(--s-16); } }
+</style>

@@ -1,0 +1,225 @@
+---
+import { withBase } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import ProductGallery from '../../components/ProductGallery.astro';
+import ProductGrid from '../../components/ProductGrid.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import StatusTag from '../../components/StatusTag.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import Services from '../../components/Services.astro';
+import {
+  designerOf, designerPath, discountPercent, getCategory, getCollection, productClientData, products,
+  relatedProducts, categoryPath, collectionPath, shopPaths,
+} from '../../lib/catalogue';
+import { formatPrice } from '../../lib/format';
+import type { Product } from '../../data/types';
+
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }));
+}
+interface Props { product: Product; }
+const { product } = Astro.props;
+const designer = designerOf(product);
+const category = getCategory(product.category)!;
+const collection = product.collectionSlug ? getCollection(product.collectionSlug) : undefined;
+const related = relatedProducts(product, 4);
+const credits = [...new Set(product.images.map((i) => i.credit).filter(Boolean))];
+const discount = discountPercent(product);
+const sizes = product.sizes ?? [];
+---
+
+<Base title={product.name} description={`${product.name} par ${designer.name} — ${product.description}`} image={product.images[0].src} current={product.category}>
+  <section class="section--tight section">
+    <div class="container">
+      <nav class="crumbs eyebrow" aria-label="Fil d’Ariane">
+        <a href={withBase("/catalogue/")}>Catalogue</a> <span>/</span>
+        <a href={categoryPath(category.id)}>{category.label}</a>
+        {collection && (<><span>/</span><a href={collectionPath(collection)}>{collection.title}</a></>)}
+      </nav>
+
+      <div class="product" data-product={productClientData(product)}>
+        <div class="product__gallery">
+          <ProductGallery images={product.images} name={product.name} />
+        </div>
+
+        <div class="product__info">
+          <a class="product__designer eyebrow eyebrow--accent link-underline" href={designerPath(designer)}>{designer.name} · {designer.country}</a>
+          <h1 class="product__name">{product.name}</h1>
+          {(product.status?.length || discount > 0) ? (
+            <div class="product__tags">
+              {discount > 0 && <StatusTag status="promo" label={`Offre -${discount} %`} />}
+              {product.status?.map((s) => <StatusTag status={s} />)}
+            </div>
+          ) : null}
+          <p class="product__price">
+            {product.oldPrice !== undefined && <s class="product__old">{formatPrice(product.oldPrice)}</s>}
+            <span class:list={{ 'product__new': product.oldPrice !== undefined }}>{formatPrice(product.price)}</span>
+          </p>
+          <p class="product__desc">{product.description}</p>
+
+          <dl class="specs">
+            {product.colors?.length ? (<div><dt class="eyebrow">Coloris</dt><dd>{product.colors.join(' · ')}</dd></div>) : null}
+            {product.materials && (<div><dt class="eyebrow">Matières</dt><dd>{product.materials}</dd></div>)}
+            <div><dt class="eyebrow">Créateur</dt><dd><a class="link-underline" href={designerPath(designer)}>{designer.name}</a>, {designer.city ?? designer.country}</dd></div>
+          </dl>
+
+          <form class="buy" data-buy novalidate>
+            {sizes.length > 0 && (
+              <fieldset class="sizes">
+                <legend class="eyebrow">Taille</legend>
+                <a class="sizes__guide link-underline" href={shopPaths.sizeGuide}>Guide des tailles</a>
+                <div class="sizes__list">
+                  {sizes.map((s) => (
+                    <label class="size">
+                      <input type="radio" name="size" value={s} />
+                      <span>{s}</span>
+                    </label>
+                  ))}
+                </div>
+                <p class="buy__error" data-buy-error hidden>Choisissez une taille pour continuer.</p>
+              </fieldset>
+            )}
+            <div class="buy__row">
+              <div class="qty" aria-label="Quantité">
+                <button type="button" data-qty="-1" aria-label="Moins">−</button>
+                <input name="qty" type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="Quantité" />
+                <button type="button" data-qty="1" aria-label="Plus">+</button>
+              </div>
+              <button class="buy__add" type="submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l1 12H5L6 8Z M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Ajouter au panier
+              </button>
+            </div>
+            <button class="buy__wish" type="button" data-wish aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 4.6 13.3a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9a4.6 4.6 0 0 1 6.5 6.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <span data-wish-label>Ajouter aux favoris</span>
+            </button>
+          </form>
+
+          <div class="product__order">
+            <WhatsAppButton product={product} designer={designer} label="Commander directement sur WhatsApp" size="lg" full />
+            <p class="product__note">
+              Le règlement se fait avec la boutique, sur WhatsApp : tailles, retouches et livraison se décident ensemble.
+              {product.price === undefined && ' Le prix vous est communiqué sur demande.'}
+            </p>
+          </div>
+
+          <div class="product__services"><Services compact /></div>
+
+          {credits.length > 0 && <p class="product__credit">Visuels d’illustration : {credits.join(', ')}.</p>}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper-2">
+    <div class="container">
+      <SectionHeading eyebrow="Pour compléter" title="Pièces associées" link={{ label: `Tout ${category.label}`, href: categoryPath(category.id) }} />
+      <ProductGrid products={related} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .crumbs { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-6); }
+  .crumbs a:hover { color: var(--ink); }
+  .product { display: grid; gap: var(--s-10); }
+  .product__info { display: grid; gap: var(--s-4); align-content: start; }
+  .product__designer { justify-self: start; }
+  .product__name { font-size: var(--fs-xl); }
+  .product__tags { display: flex; gap: var(--s-1); flex-wrap: wrap; }
+  .product__price { font-size: var(--fs-md); display: flex; gap: var(--s-3); align-items: baseline; flex-wrap: wrap; }
+  .product__old { color: var(--ink-40); font-size: var(--fs-base); }
+  .product__new { color: var(--accent-ink); font-weight: 500; }
+  .product__price { font-weight: 500; }
+  .product__desc { color: var(--ink-70); max-width: 50ch; }
+  .specs { margin: var(--s-2) 0 0; display: grid; gap: var(--s-3); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+  .specs div { display: grid; grid-template-columns: 7rem 1fr; gap: var(--s-3); align-items: baseline; }
+  .specs dd { margin: 0; font-size: var(--fs-sm); }
+
+  .buy { display: grid; gap: var(--s-5); margin-top: var(--s-2); padding-top: var(--s-6); border-top: 1px solid var(--line); }
+  .sizes { border: 0; padding: 0; margin: 0; display: grid; gap: var(--s-3); position: relative; }
+  .sizes legend { padding: 0; margin-bottom: var(--s-3); }
+  .sizes__guide { position: absolute; right: 0; top: 0; font-size: var(--fs-xs); color: var(--ink-70); }
+  .product__services { margin-top: var(--s-2); }
+  .sizes__list { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .size { position: relative; }
+  .size input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .size span {
+    display: grid; place-items: center; min-width: 3rem; height: 2.75rem; padding-inline: var(--s-3);
+    border: 1px solid var(--line); font-size: var(--fs-sm); letter-spacing: 0.04em;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .size:hover span { border-color: var(--ink); }
+  .size input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .buy__add:hover { background: var(--accent); color: var(--ink); }
+  .size input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .buy__error { font-size: var(--fs-xs); color: var(--accent-ink); }
+  .buy__error[hidden] { display: none; }
+  .buy__row { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); }
+  .qty { display: inline-grid; grid-template-columns: 2.5rem 3rem 2.5rem; border: 1px solid var(--ink); height: 3.25rem; }
+  .qty button { font-size: 1.1rem; transition: background 0.2s var(--ease); }
+  .qty button:hover { background: var(--paper-2); }
+  .qty input { font: inherit; text-align: center; border: 0; border-inline: 1px solid var(--line); background: transparent; color: inherit; -moz-appearance: textfield; appearance: textfield; min-width: 0; }
+  .qty input::-webkit-inner-spin-button, .qty input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .buy__add {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+    font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1;
+    padding: 1.1rem 2rem; background: var(--ink); color: var(--paper); transition: background 0.25s var(--ease);
+  }
+  .buy__add svg { width: 1.1em; height: 1.1em; }
+  .buy__add:hover { background: var(--accent); }
+  .buy__wish { justify-self: start; display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); color: var(--ink-70); transition: color 0.2s var(--ease); }
+  .buy__wish svg { width: 18px; height: 18px; }
+  .buy__wish:hover { color: var(--ink); }
+  .buy__wish.is-on { color: var(--accent); }
+  .buy__wish.is-on svg path { fill: currentColor; }
+
+  .product__order { display: grid; gap: var(--s-3); margin-top: var(--s-2); padding-top: var(--s-6); border-top: 1px solid var(--line); }
+  .product__note { font-size: var(--fs-xs); color: var(--ink-40); max-width: 44ch; }
+  .product__credit { font-size: 0.65rem; color: var(--ink-40); }
+  @media (min-width: 960px) {
+    .product { grid-template-columns: 1.15fr 0.85fr; gap: var(--s-16); align-items: start; }
+    .product__info { position: sticky; top: calc(var(--header-h) + var(--s-6)); }
+  }
+</style>
+
+<script>
+  import { addToCart, initStoreButtons, paths, readProduct, toast } from '../../scripts/store';
+
+  initStoreButtons();
+
+  const form = document.querySelector<HTMLFormElement>('[data-buy]');
+  if (form) {
+    const qty = form.querySelector<HTMLInputElement>('input[name="qty"]');
+    const error = form.querySelector<HTMLElement>('[data-buy-error]');
+
+    form.querySelectorAll<HTMLButtonElement>('[data-qty]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (!qty) return;
+        const next = (parseInt(qty.value, 10) || 1) + Number(btn.dataset.qty);
+        qty.value = String(Math.min(99, Math.max(1, next)));
+      });
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const product = readProduct(form);
+      if (!product) return;
+      const size = form.querySelector<HTMLInputElement>('input[name="size"]:checked')?.value ?? null;
+      if (product.sizes.length && !size) {
+        if (error) error.hidden = false;
+        form.querySelector<HTMLInputElement>('input[name="size"]')?.focus();
+        return;
+      }
+      if (error) error.hidden = true;
+      const n = Math.min(99, Math.max(1, parseInt(qty?.value ?? '1', 10) || 1));
+      addToCart(product, size, n);
+      const sizeLabel = size ? ` (taille ${size})` : '';
+      toast(`${n} × « ${product.name} »${sizeLabel} dans votre panier`, { href: paths.cart, label: 'Voir le panier' });
+    });
+    form.querySelectorAll<HTMLInputElement>('input[name="size"]').forEach((r) =>
+      r.addEventListener('change', () => { if (error) error.hidden = true; }),
+    );
+  }
+</script>

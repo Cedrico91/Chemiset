@@ -1,0 +1,97 @@
+---
+import Base from '../layouts/Base.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { site } from '../config/site';
+import { shopPaths } from '../lib/catalogue';
+
+const pending = 'à confirmer par la boutique';
+const faq = [
+  {
+    q: 'Comment passer commande ?',
+    a: 'Ajoutez vos pièces au panier (ou commandez une pièce directement depuis sa fiche), puis appuyez sur « Commander sur WhatsApp ». Un message récapitulatif s’ouvre, déjà rédigé : vous n’avez qu’à l’envoyer. La boutique confirme la disponibilité, la taille et la livraison dans la conversation.',
+  },
+  {
+    q: 'Faut-il créer un compte ?',
+    a: 'Non. Le panier et les favoris sont conservés dans votre navigateur, et la commande se fait sur WhatsApp. Aucun mot de passe, aucun formulaire.',
+  },
+  {
+    q: 'Comment choisir ma taille ?',
+    a: `Prenez trois mesures (poitrine, taille, hanches) et consultez le guide des tailles. Si vous hésitez entre deux tailles, envoyez vos mesures sur WhatsApp : la boutique vous conseille pour la pièce précise, car chaque créateur a sa coupe.`,
+  },
+  {
+    q: 'Que signifie « Sur commande » ?',
+    a: 'La pièce n’est pas en stock : elle est réalisée pour vous après confirmation, le plus souvent à vos mesures (pièces de cérémonie). Le délai vous est indiqué sur WhatsApp au moment de la commande.',
+  },
+  {
+    q: 'Et « Pièce unique » ?',
+    a: 'Il n’en existe qu’un exemplaire, dans la taille indiquée. Premier arrivé, premier servi : la boutique confirme la disponibilité à réception de votre message.',
+  },
+  {
+    q: 'Comment régler ma commande ?',
+    a: site.delivery.payment || `Aucun paiement en ligne sur ce site. Le mode de règlement est convenu avec la boutique sur WhatsApp (modalités ${pending}).`,
+  },
+  {
+    q: 'Livrez-vous en dehors de Cotonou ?',
+    a: site.delivery.text || `Zones, délais et frais de livraison : ${pending}. Posez la question dans votre message de commande, la boutique vous répond tout de suite.`,
+  },
+  {
+    q: 'Puis-je échanger une pièce ?',
+    a: site.delivery.returns || `Conditions d’échange : ${pending}. Les pièces réalisées sur mesure ne sont en général ni reprises ni échangées.`,
+  },
+  {
+    q: 'Faites-vous des retouches ?',
+    a: site.delivery.alterations || `Possibilités de retouches (ourlet, cintrage, manches) : ${pending}.`,
+  },
+  {
+    q: 'Les photos sont-elles celles des pièces en boutique ?',
+    a: site.demo
+      ? 'Pas encore : ce site est en cours de mise en place, et les visuels actuels sont des photos d’illustration. Les photos des pièces de la boutique les remplaceront.'
+      : 'Oui, chaque pièce est photographiée par la boutique. Les coloris peuvent varier légèrement selon votre écran.',
+  },
+];
+---
+
+<Base title="Questions fréquentes" description="Commande, tailles, règlement, livraison, échanges : les réponses de La Chemise Africaine." current="faq">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow eyebrow--accent">Questions fréquentes</p>
+        <h1 class="title-xl">Tout ce qu’on nous demande avant de commander</h1>
+      </header>
+
+      <div class="faq">
+        {faq.map((item, i) => (
+          <details class="faq__item" open={i === 0}>
+            <summary class="faq__q"><span>{item.q}</span><span class="faq__plus" aria-hidden="true">+</span></summary>
+            <p class="faq__a">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper-2">
+    <div class="container cta">
+      <p class="eyebrow">Une autre question ?</p>
+      <h2 class="title-lg">Écrivez-nous sur WhatsApp, on vous répond en direct.</h2>
+      <div class="cta__actions">
+        <WhatsAppButton label="Poser ma question" />
+        <a class="link-underline" href={shopPaths.sizeGuide}>Guide des tailles</a>
+        <a class="link-underline" href={shopPaths.delivery}>Livraison & retours</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-8); max-width: 52rem; }
+  .faq { max-width: 52rem; border-top: 1px solid var(--line); }
+  .faq__item { border-bottom: 1px solid var(--line); }
+  .faq__q { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); padding: var(--s-5) 0; cursor: pointer; list-style: none; font-weight: 600; font-size: var(--fs-md); letter-spacing: -0.01em; }
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__plus { font-size: 1.4rem; font-weight: 400; color: var(--accent-ink); transition: transform 0.3s var(--ease); }
+  details[open] .faq__plus { transform: rotate(45deg); }
+  .faq__a { color: var(--ink-70); padding-bottom: var(--s-6); max-width: 62ch; }
+  .cta { display: grid; gap: var(--s-4); justify-items: start; max-width: 44rem; }
+  .cta__actions { display: flex; flex-wrap: wrap; gap: var(--s-6); align-items: center; font-size: var(--fs-sm); }
+</style>

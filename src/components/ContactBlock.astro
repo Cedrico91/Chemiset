@@ -1,0 +1,43 @@
+---
+import { site } from '../config/site';
+import { orLabel } from '../lib/format';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+const socials = Object.entries(site.social).filter(([, url]) => url);
+---
+
+<div class="contact" id="contact">
+  <dl class="contact__list">
+    <div>
+      <dt class="eyebrow">WhatsApp</dt>
+      <dd>{site.whatsapp ? `+${site.whatsapp}` : 'Numéro à confirmer'}</dd>
+    </div>
+    <div>
+      <dt class="eyebrow">E-mail</dt>
+      <dd>{site.email ? <a class="link-underline" href={`mailto:${site.email}`}>{site.email}</a> : 'À confirmer'}</dd>
+    </div>
+    <div>
+      <dt class="eyebrow">Boutique</dt>
+      <dd>{orLabel(site.address, 'Adresse à confirmer')}<br />{site.city}</dd>
+    </div>
+    <div>
+      <dt class="eyebrow">Horaires</dt>
+      <dd>{orLabel(site.hours, 'À confirmer')}</dd>
+    </div>
+    {socials.length > 0 && (
+      <div>
+        <dt class="eyebrow">Réseaux</dt>
+        <dd class="contact__social">{socials.map(([name, url]) => <a class="link-underline" href={url} target="_blank" rel="noopener">{name}</a>)}</dd>
+      </div>
+    )}
+  </dl>
+  <WhatsAppButton label="Écrire sur WhatsApp" size="lg" />
+</div>
+
+<style>
+  .contact { display: grid; gap: var(--s-8); align-content: start; }
+  .contact__list { margin: 0; display: grid; gap: var(--s-5); }
+  .contact__list dt { margin-bottom: var(--s-1); }
+  .contact__list dd { margin: 0; font-size: var(--fs-md); }
+  .contact__social { display: flex; gap: var(--s-4); text-transform: capitalize; }
+</style>

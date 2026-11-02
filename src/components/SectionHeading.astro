@@ -1,0 +1,26 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  link?: { label: string; href: string };
+  align?: 'left' | 'center';
+  as?: 'h1' | 'h2' | 'h3';
+}
+const { eyebrow, title, link, align = 'left', as: Tag = 'h2' } = Astro.props;
+---
+
+<div class:list={['sh', `sh--${align}`]}>
+  <div>
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <Tag class="sh__title title-xl">{title}</Tag>
+    <slot />
+  </div>
+  {link && <a class="sh__link link-underline" href={link.href}>{link.label}</a>}
+</div>
+
+<style>
+  .sh { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); margin-bottom: var(--s-10); }
+  .sh--center { justify-content: center; text-align: center; }
+  .sh__title { margin-top: var(--s-2); }
+  .sh__link { font-size: var(--fs-sm); letter-spacing: 0.04em; padding-bottom: 4px; }
+</style>

@@ -1,0 +1,20 @@
+---
+import { withBase } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+---
+
+<Base title="Page introuvable">
+  <section class="section">
+    <div class="container nf">
+      <p class="eyebrow">Erreur 404</p>
+      <h1 class="title-xl">Cette page n’existe pas, ou plus.</h1>
+      <p class="lede">La pièce a peut-être changé de rayon. Repartez du catalogue.</p>
+      <Button href={withBase("/catalogue/")}>Voir le catalogue</Button>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { display: grid; gap: var(--s-4); justify-items: start; min-height: 50vh; align-content: center; }
+</style>

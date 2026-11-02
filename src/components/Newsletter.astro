@@ -1,0 +1,79 @@
+---
+/**
+ * Inscription à la newsletter (démo). Sans backend, l'adresse est simplement mémorisée dans le
+ * navigateur et un message de confirmation s'affiche. Sur le site final, le formulaire se branche
+ * sur l'outil d'e-mailing de la boutique (Brevo, Mailchimp…) en quelques lignes.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+}
+const { tone = 'dark' } = Astro.props;
+---
+
+<div class:list={['nl', `nl--${tone}`]}>
+  <div class="nl__text">
+    <p class="eyebrow nl__eyebrow">Newsletter</p>
+    <p class="nl__title">Les nouvelles pièces et les offres, avant tout le monde.</p>
+  </div>
+  <form class="nl__form" data-newsletter novalidate>
+    <label class="visually-hidden" for="nl-email">Votre e-mail</label>
+    <input class="nl__input" id="nl-email" name="email" type="email" placeholder="Votre e-mail" autocomplete="email" required />
+    <button class="nl__btn" type="submit">S’inscrire</button>
+    <p class="nl__msg" data-newsletter-msg aria-live="polite"></p>
+  </form>
+</div>
+
+<style>
+  .nl { display: grid; gap: var(--s-6); padding-block: var(--s-8); border-bottom: 1px solid rgb(255 255 255 / 0.15); margin-bottom: var(--s-12); }
+  .nl--light { border-color: var(--line); }
+  .nl__eyebrow { color: inherit; opacity: 0.6; }
+  .nl__title { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.02em; margin-top: var(--s-2); max-width: 24ch; line-height: 1.15; }
+  .nl__form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2); align-content: start; min-width: 0; }
+  .nl__input {
+    font: inherit; font-size: var(--fs-sm); color: inherit; background: transparent;
+    border: 0; border-bottom: 1px solid currentColor; padding: var(--s-3) 0; min-width: 0;
+  }
+  .nl__input::placeholder { color: inherit; opacity: 0.5; }
+  .nl__btn {
+    font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: var(--s-3) var(--s-5); background: var(--paper); color: var(--ink); transition: background 0.25s var(--ease), color 0.25s var(--ease);
+  }
+  .nl--light .nl__btn { background: var(--ink); color: var(--paper); }
+  .nl__btn:hover { background: var(--accent); color: var(--ink); }
+  .nl__msg { grid-column: 1 / -1; font-size: var(--fs-xs); opacity: 0.8; min-height: 1.2em; }
+  .nl__msg.is-error { color: #e8a07a; opacity: 1; }
+  .nl--light .nl__msg.is-error { color: var(--accent-ink); }
+  @media (min-width: 960px) { .nl { grid-template-columns: 1.2fr 1fr; align-items: center; } }
+</style>
+
+<script>
+  import { toast } from '../scripts/store';
+
+  const KEY = 'lca:newsletter';
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
+    const input = form.querySelector<HTMLInputElement>('input[type="email"]');
+    const msg = form.querySelector<HTMLElement>('[data-newsletter-msg]');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!input || !msg) return;
+      const email = input.value.trim();
+      if (!email || !input.checkValidity()) {
+        msg.textContent = 'Merci d’indiquer une adresse e-mail valide.';
+        msg.classList.add('is-error');
+        input.focus();
+        return;
+      }
+      try {
+        const list: string[] = JSON.parse(localStorage.getItem(KEY) ?? '[]');
+        if (!list.includes(email)) list.push(email);
+        localStorage.setItem(KEY, JSON.stringify(list));
+      } catch {
+        /* stockage indisponible : on confirme quand même */
+      }
+      msg.classList.remove('is-error');
+      msg.textContent = 'Merci, votre adresse est enregistrée. (Démo : sur le site final, l’inscription part vers votre outil d’e-mailing.)';
+      toast('Inscription à la newsletter enregistrée (démo)');
+      form.reset();
+    });
+  });
+</script>

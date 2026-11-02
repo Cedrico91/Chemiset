@@ -1,0 +1,86 @@
+---
+import { PLACEHOLDER } from '../lib/url';
+import type { ImageRef } from '../data/types';
+
+interface Props {
+  images: ImageRef[];
+  name: string;
+}
+const { images, name } = Astro.props;
+const [first] = images;
+---
+
+<div class="gallery" data-gallery>
+  <div class="img-frame img-frame--3x4 gallery__main">
+    <img
+      src={first.src}
+      alt={first.alt}
+      width={first.width}
+      height={first.height}
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      data-gallery-main
+      onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`}
+    />
+  </div>
+  {images.length > 1 && (
+    <ul class="gallery__thumbs" aria-label={`Photos de ${name}`}>
+      {images.map((img, i) => (
+        <li>
+          <button
+            type="button"
+            class:list={['gallery__thumb', 'img-frame', 'img-frame--3x4', { 'is-active': i === 0 }]}
+            data-gallery-thumb
+            data-src={img.src}
+            data-alt={img.alt}
+            aria-current={i === 0 ? 'true' : undefined}
+            aria-label={`Photo ${i + 1}`}
+          >
+            <img src={img.src} alt="" width={img.width} height={img.height} loading="lazy" decoding="async" onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`} />
+          </button>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<style>
+  .gallery { display: grid; gap: var(--s-3); }
+  .gallery__main img { transition: opacity 0.3s var(--ease); }
+  .gallery__main.is-switching img { opacity: 0; }
+  .gallery__thumbs { display: grid; grid-auto-flow: column; grid-auto-columns: 4.5rem; gap: var(--s-2); overflow-x: auto; padding-bottom: var(--s-1); }
+  .gallery__thumb { width: 100%; opacity: 0.55; transition: opacity 0.25s var(--ease); outline-offset: 2px; }
+  .gallery__thumb.is-active, .gallery__thumb:hover { opacity: 1; }
+  @media (min-width: 960px) {
+    .gallery { grid-template-columns: 5rem 1fr; }
+    .gallery__thumbs { grid-auto-flow: row; grid-auto-columns: auto; overflow: visible; }
+    .gallery__main { grid-column: 2; grid-row: 1; }
+    .gallery__thumbs { grid-column: 1; grid-row: 1; align-content: start; }
+  }
+</style>
+
+<script>
+  for (const gallery of document.querySelectorAll<HTMLElement>('[data-gallery]')) {
+    const main = gallery.querySelector<HTMLImageElement>('[data-gallery-main]');
+    const frame = main?.parentElement;
+    const thumbs = gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumb]');
+    if (!main || !frame) continue;
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        if (thumb.classList.contains('is-active')) return;
+        frame.classList.add('is-switching');
+        window.setTimeout(() => {
+          main.src = thumb.dataset.src ?? main.src;
+          main.alt = thumb.dataset.alt ?? '';
+          frame.classList.remove('is-switching');
+        }, 180);
+        thumbs.forEach((t) => {
+          t.classList.toggle('is-active', t === thumb);
+          if (t === thumb) t.setAttribute('aria-current', 'true');
+          else t.removeAttribute('aria-current');
+        });
+      });
+    });
+  }
+</script>

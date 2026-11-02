@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site';
+import { orLabel } from '../lib/format';
+
+const fields = [
+  { label: 'Dénomination', value: site.legal.companyName || site.name },
+  { label: 'Activité', value: 'Boutique de prêt-à-porter' },
+  { label: 'Siège', value: `${orLabel(site.address, 'Adresse à compléter')}, ${site.city}` },
+  { label: 'RCCM', value: orLabel(site.legal.registration, 'À compléter') },
+  { label: 'IFU', value: orLabel(site.legal.taxId, 'À compléter') },
+  { label: 'Responsable de la publication', value: orLabel(site.legal.manager, 'À compléter') },
+  { label: 'Contact', value: site.email || (site.whatsapp ? `WhatsApp +${site.whatsapp}` : 'À compléter') },
+  { label: 'Hébergement', value: orLabel(site.legal.host, 'À compléter') },
+];
+---
+
+<Base title="Mentions légales" description="Mentions légales et informations sur l’éditeur du site La Chemise Africaine." current="mentions-legales">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow">Mentions légales</p>
+        <h1 class="title-xl">Éditeur du site</h1>
+      </header>
+
+      <dl class="fields">
+        {fields.map((f) => (
+          <div><dt class="eyebrow">{f.label}</dt><dd>{f.value}</dd></div>
+        ))}
+      </dl>
+
+      <div class="text">
+        <h2 class="title-lg">Données personnelles</h2>
+        <p class="muted">Ce site ne collecte aucune donnée personnelle sur un serveur : le panier, les favoris et l’inscription à la newsletter sont conservés uniquement dans votre navigateur. Les échanges liés à une commande se font sur WhatsApp, selon les conditions d’utilisation de ce service.</p>
+        <h2 class="title-lg">Propriété intellectuelle</h2>
+        <p class="muted">Le nom, le logo et les contenus de {site.name} sont protégés. Toute reproduction sans accord est interdite. Les créations présentées appartiennent à leurs créateurs respectifs.</p>
+        {site.demo && (
+          <p class="muted">Pendant la mise en place du site, certains visuels sont des photos d’illustration (Unsplash, Pexels) utilisées sous leurs licences respectives.</p>
+        )}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-8); }
+  .fields { margin: 0 0 var(--s-12); display: grid; gap: var(--s-4); max-width: 44rem; }
+  .fields div { display: grid; grid-template-columns: 1fr; gap: 2px; padding-bottom: var(--s-3); border-bottom: 1px solid var(--line); }
+  .fields dd { margin: 0; }
+  .text { display: grid; gap: var(--s-4); max-width: 60ch; }
+  .text h2 { margin-top: var(--s-4); }
+  @media (min-width: 640px) { .fields div { grid-template-columns: 14rem 1fr; } }
+</style>

@@ -1,0 +1,228 @@
+---
+import { withBase, PLACEHOLDER } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { site } from '../config/site';
+import { featuredProducts } from '../lib/catalogue';
+import { hasWhatsApp, normalizeNumber } from '../lib/whatsapp';
+
+const suggestions = featuredProducts(4);
+---
+
+<Base title="Mon panier" description="Votre sélection, à commander en un message WhatsApp." current="panier">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow">Panier</p>
+        <h1 class="title-xl">Votre sélection</h1>
+        <p class="lede">Ajustez tailles et quantités, puis envoyez le récapitulatif à la boutique sur WhatsApp. Le règlement et la livraison se règlent ensemble dans la conversation.</p>
+      </header>
+
+      <div class="cart" data-cart data-shop={site.name} data-wa={hasWhatsApp() ? normalizeNumber(site.whatsapp) : ''} data-placeholder={PLACEHOLDER}>
+        <div class="cart__empty" data-cart-empty>
+          <p class="cart__empty-title">Votre panier est vide.</p>
+          <p class="muted">Parcourez le catalogue et ajoutez les pièces qui vous plaisent : elles vous attendront ici.</p>
+          <a class="btn-solid" href={withBase('/catalogue/')}>Voir le catalogue</a>
+        </div>
+
+        <div class="cart__layout" data-cart-filled hidden>
+          <ul class="lines" data-cart-lines></ul>
+
+          <aside class="summary">
+            <p class="eyebrow">Récapitulatif</p>
+            <dl class="summary__list">
+              <div><dt>Pièces</dt><dd data-cart-count>0</dd></div>
+              <div><dt>Sous-total</dt><dd data-cart-total>0 FCFA</dd></div>
+              <div><dt>Livraison</dt><dd>À convenir avec la boutique</dd></div>
+            </dl>
+            <p class="summary__note" data-cart-incomplete hidden>Certaines pièces sont à prix sur demande : la boutique vous confirme le total sur WhatsApp.</p>
+            <p class="summary__total"><span>Total indicatif</span><strong data-cart-total-big>0 FCFA</strong></p>
+
+            {hasWhatsApp() ? (
+              <a class="summary__order" href="#" target="_blank" rel="noopener" data-cart-order>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+                Commander sur WhatsApp
+              </a>
+            ) : (
+              <button class="summary__order" type="button" data-wa-demo data-message="" data-cart-order title="Démo : ouvrira WhatsApp sur le site final">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+                Commander sur WhatsApp
+              </button>
+            )}
+            <p class="summary__small">Aucun paiement en ligne : le message récapitule votre panier, la boutique confirme disponibilité, livraison et règlement.</p>
+            <div class="summary__links">
+              <a class="link-underline" href={withBase('/catalogue/')}>Continuer mes achats</a>
+              <button class="link-underline" type="button" data-cart-clear>Vider le panier</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper-2">
+    <div class="container">
+      <SectionHeading eyebrow="Vous aimerez aussi" title="Les pièces du moment" link={{ label: 'Tout le catalogue', href: withBase('/catalogue/') }} />
+      <ProductGrid products={suggestions} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-10); }
+  .cart__empty { display: grid; gap: var(--s-3); justify-items: start; padding: var(--s-10) 0; border-top: 1px solid var(--line); }
+  .cart__empty[hidden] { display: none; }
+  .cart__empty-title { font-family: var(--font-display); font-size: var(--fs-lg); }
+  .btn-solid {
+    margin-top: var(--s-3); display: inline-flex; padding: 0.9rem 1.5rem; background: var(--ink); color: var(--paper);
+    font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1; transition: background 0.25s var(--ease);
+  }
+  .btn-solid:hover { background: var(--accent); }
+
+  .cart__layout { display: grid; gap: var(--s-10); }
+  .cart__layout[hidden] { display: none; }
+  .lines { display: grid; border-top: 1px solid var(--line); }
+  .lines :global(.line) { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--s-4); padding: var(--s-5) 0; border-bottom: 1px solid var(--line); }
+  .lines :global(.line__img) { aspect-ratio: 3 / 4; overflow: hidden; background: var(--paper-3); }
+  .lines :global(.line__img img) { width: 100%; height: 100%; object-fit: cover; }
+  .lines :global(.line__body) { display: grid; gap: var(--s-2); align-content: start; }
+  .lines :global(.line__designer) { font-size: 0.65rem; }
+  .lines :global(.line__name) { font-family: var(--font-display); font-size: 1.35rem; font-weight: 500; }
+  .lines :global(.line__price) { font-size: var(--fs-sm); color: var(--ink-70); }
+  .lines :global(.line__controls) { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; margin-top: var(--s-1); }
+  .lines :global(.line__size) { font: inherit; font-size: var(--fs-sm); background: transparent; border: 1px solid var(--line); padding: 0.45rem var(--s-3); color: var(--ink); cursor: pointer; }
+  .lines :global(.line__size.is-missing) { border-color: var(--accent); color: var(--accent-ink); }
+  .lines :global(.qty) { display: inline-grid; grid-template-columns: 2rem 2.5rem 2rem; border: 1px solid var(--line); height: 2.4rem; }
+  .lines :global(.qty button) { font-size: 1rem; }
+  .lines :global(.qty button:hover) { background: var(--paper-2); }
+  .lines :global(.qty span) { display: grid; place-items: center; font-size: var(--fs-sm); border-inline: 1px solid var(--line); }
+  .lines :global(.line__total) { font-size: var(--fs-sm); font-weight: 500; margin-left: auto; }
+  .lines :global(.line__remove) { font-size: var(--fs-xs); color: var(--ink-40); letter-spacing: 0.04em; border-bottom: 1px solid transparent; }
+  .lines :global(.line__remove:hover) { color: var(--accent-ink); border-color: currentColor; }
+
+  .summary { display: grid; gap: var(--s-4); align-content: start; padding: var(--s-6); background: var(--paper-2); }
+  .summary__list { margin: 0; display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
+  .summary__list div { display: flex; justify-content: space-between; gap: var(--s-4); }
+  .summary__list dt { color: var(--ink-70); }
+  .summary__list dd { margin: 0; text-align: right; }
+  .summary__note { font-size: var(--fs-xs); color: var(--accent-ink); }
+  .summary__note[hidden] { display: none; }
+  .summary__total { display: flex; justify-content: space-between; align-items: baseline; padding-top: var(--s-4); border-top: 1px solid var(--line); }
+  .summary__total strong { font-family: var(--font-display); font-size: 1.75rem; font-weight: 500; }
+  .summary__order {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); width: 100%;
+    font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1;
+    padding: 1.1rem 2rem; background: var(--whatsapp); color: #fff; transition: background 0.25s var(--ease);
+  }
+  .summary__order svg { width: 1.1em; height: 1.1em; }
+  .summary__order:hover { background: #176e49; }
+  .summary__small { font-size: var(--fs-xs); color: var(--ink-40); }
+  .summary__links { display: flex; justify-content: space-between; gap: var(--s-4); font-size: var(--fs-sm); margin-top: var(--s-2); }
+  @media (min-width: 640px) { .lines :global(.line) { grid-template-columns: 7rem 1fr; gap: var(--s-6); } }
+  @media (min-width: 960px) {
+    .cart__layout { grid-template-columns: 1.5fr 1fr; gap: var(--s-16); align-items: start; }
+    .summary { position: sticky; top: calc(var(--header-h) + var(--s-6)); }
+  }
+</style>
+
+<script>
+  import { STORE_EVENT, buildCartMessage, cartCount, cartTotal, clearCart, formatPrice, getCart, lineKey, removeLine, updateLine, toast } from '../scripts/store';
+
+  const root = document.querySelector<HTMLElement>('[data-cart]');
+  if (root) {
+    const shop = root.dataset.shop ?? '';
+    const wa = root.dataset.wa ?? '';
+    const placeholder = root.dataset.placeholder ?? '';
+    const empty = root.querySelector<HTMLElement>('[data-cart-empty]')!;
+    const filled = root.querySelector<HTMLElement>('[data-cart-filled]')!;
+    const list = root.querySelector<HTMLElement>('[data-cart-lines]')!;
+    const count = root.querySelector<HTMLElement>('[data-cart-count]')!;
+    const total = root.querySelector<HTMLElement>('[data-cart-total]')!;
+    const totalBig = root.querySelector<HTMLElement>('[data-cart-total-big]')!;
+    const incomplete = root.querySelector<HTMLElement>('[data-cart-incomplete]')!;
+    const order = root.querySelector<HTMLElement>('[data-cart-order]')!;
+
+    const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c);
+
+    const render = () => {
+      const cart = getCart();
+      const has = cart.length > 0;
+      empty.hidden = has;
+      filled.hidden = !has;
+      if (!has) return;
+
+      list.innerHTML = cart
+        .map((l) => {
+          const key = lineKey(l);
+          const sizeCtl = l.sizes.length
+            ? `<select class="line__size ${l.size ? '' : 'is-missing'}" data-size="${esc(key)}" aria-label="Taille">
+                 <option value="" ${l.size ? '' : 'selected'}>Taille à choisir</option>
+                 ${l.sizes.map((s) => `<option value="${esc(s)}" ${s === l.size ? 'selected' : ''}>${esc(s)}</option>`).join('')}
+               </select>`
+            : '';
+          const lineTotal = l.price === null ? 'Prix sur demande' : formatPrice(l.price * l.qty);
+          return `<li class="line">
+            <a class="line__img" href="${esc(l.url)}"><img src="${esc(l.image)}" alt="" width="300" height="400" loading="lazy" onerror="this.onerror=null;this.src='${esc(placeholder)}'"></a>
+            <div class="line__body">
+              <p class="line__designer eyebrow">${esc(l.designer)}</p>
+              <a class="line__name" href="${esc(l.url)}">${esc(l.name)}</a>
+              <p class="line__price">${formatPrice(l.price)}${l.oldPrice ? ` <s>${formatPrice(l.oldPrice)}</s>` : ''}</p>
+              <div class="line__controls">
+                ${sizeCtl}
+                <div class="qty">
+                  <button type="button" data-delta="-1" data-key="${esc(key)}" aria-label="Moins">−</button>
+                  <span>${l.qty}</span>
+                  <button type="button" data-delta="1" data-key="${esc(key)}" aria-label="Plus">+</button>
+                </div>
+                <span class="line__total">${lineTotal}</span>
+              </div>
+              <button type="button" class="line__remove" data-remove="${esc(key)}">Retirer</button>
+            </div>
+          </li>`;
+        })
+        .join('');
+
+      const t = cartTotal();
+      count.textContent = String(cartCount());
+      total.textContent = formatPrice(t.total);
+      totalBig.textContent = formatPrice(t.total);
+      incomplete.hidden = t.complete;
+
+      const message = buildCartMessage(shop, cart);
+      if (order instanceof HTMLAnchorElement && wa) {
+        order.href = `https://wa.me/${wa}?text=${encodeURIComponent(message)}`;
+      } else {
+        order.dataset.message = message;
+      }
+    };
+
+    list.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const delta = target.closest<HTMLElement>('[data-delta]');
+      if (delta) {
+        const key = delta.dataset.key ?? '';
+        const line = getCart().find((l) => lineKey(l) === key);
+        if (line) updateLine(key, { qty: line.qty + Number(delta.dataset.delta) });
+        return;
+      }
+      const remove = target.closest<HTMLElement>('[data-remove]');
+      if (remove) {
+        removeLine(remove.dataset.remove ?? '');
+        toast('Pièce retirée du panier');
+      }
+    });
+    list.addEventListener('change', (e) => {
+      const select = (e.target as HTMLElement).closest<HTMLSelectElement>('[data-size]');
+      if (select) updateLine(select.dataset.size ?? '', { size: select.value || null });
+    });
+    root.querySelector('[data-cart-clear]')?.addEventListener('click', () => {
+      clearCart();
+      toast('Panier vidé');
+    });
+
+    render();
+    window.addEventListener(STORE_EVENT, render);
+    window.addEventListener('storage', render);
+  }
+</script>

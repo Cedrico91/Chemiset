@@ -1,0 +1,55 @@
+---
+/** Tuile d'entrée par rayon (façon « Latest in Suits » de Suitsupply) : photo, libellé, flèche. */
+import { PLACEHOLDER } from '../lib/url';
+import type { ImageRef } from '../data/types';
+
+interface Props {
+  label: string;
+  note?: string;
+  href: string;
+  image: ImageRef;
+  eager?: boolean;
+}
+const { label, note, href, image, eager = false } = Astro.props;
+---
+
+<a class="tile" href={href}>
+  <div class="img-frame img-frame--3x4">
+    <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading={eager ? 'eager' : 'lazy'} decoding="async" onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`} />
+  </div>
+  <span class="tile__label">
+    <span class="tile__text">
+      <strong>{label}</strong>
+      {note && <span class="tile__note">{note}</span>}
+    </span>
+    <span class="tile__arrow" aria-hidden="true">→</span>
+  </span>
+</a>
+
+<style>
+  .tile { display: block; position: relative; color: var(--paper); overflow: hidden; }
+  .tile .img-frame::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0) 55%);
+    transition: opacity 0.4s var(--ease);
+  }
+  .tile__label {
+    position: absolute; left: var(--s-3); right: var(--s-3); bottom: var(--s-3);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-2); min-width: 0;
+  }
+  .tile__text { display: grid; gap: 2px; min-width: 0; }
+  .tile__text strong { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; overflow-wrap: anywhere; }
+  .tile__note { display: none; font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
+  .tile__arrow {
+    width: 2rem; height: 2rem; flex: none; display: grid; place-items: center;
+    background: var(--paper); color: var(--ink); font-size: 1rem;
+    transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .tile:hover .tile__arrow { background: var(--accent); transform: translateX(3px); }
+  @media (min-width: 640px) {
+    .tile__label { left: var(--s-4); right: var(--s-4); bottom: var(--s-4); gap: var(--s-3); }
+    .tile__text strong { font-size: var(--fs-lg); }
+    .tile__note { display: block; }
+    .tile__arrow { width: 2.5rem; height: 2.5rem; font-size: 1.1rem; }
+  }
+</style>

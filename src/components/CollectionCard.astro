@@ -1,0 +1,39 @@
+---
+import { PLACEHOLDER } from '../lib/url';
+import type { Collection } from '../data/types';
+import { collectionPath, countByCollection } from '../lib/catalogue';
+
+interface Props {
+  collection: Collection;
+  size?: 'md' | 'lg';
+}
+const { collection, size = 'md' } = Astro.props;
+const count = countByCollection(collection.slug);
+---
+
+<a class:list={['ccard', `ccard--${size}`]} href={collectionPath(collection)}>
+  <div class="img-frame img-frame--16x10 ccard__media">
+    <img
+      src={collection.cover.src}
+      alt={collection.cover.alt}
+      width={collection.cover.width}
+      height={collection.cover.height}
+      loading="lazy"
+      decoding="async"
+      onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`}
+    />
+  </div>
+  <div class="ccard__body">
+    <p class="eyebrow">{collection.season ?? 'Collection'} · {count} pièce{count > 1 ? 's' : ''}</p>
+    <h3 class="ccard__title">{collection.title}</h3>
+    <p class="ccard__subtitle muted">{collection.subtitle}</p>
+  </div>
+</a>
+
+<style>
+  .ccard { display: block; }
+  .ccard__body { padding-top: var(--s-4); display: grid; gap: var(--s-1); }
+  .ccard__title { font-size: var(--fs-lg); }
+  .ccard__subtitle { font-size: var(--fs-sm); }
+  .ccard--lg .ccard__title { font-size: var(--fs-xl); }
+</style>

@@ -1,0 +1,113 @@
+---
+import { PLACEHOLDER } from '../lib/url';
+import type { Product } from '../data/types';
+import { designerOf, discountPercent, productClientData, productPath, searchText } from '../lib/catalogue';
+import { formatPrice } from '../lib/format';
+import StatusTag from './StatusTag.astro';
+
+interface Props {
+  product: Product;
+  eager?: boolean;
+}
+const { product, eager = false } = Astro.props;
+const designer = designerOf(product);
+const [main, hover] = product.images;
+const discount = discountPercent(product);
+---
+
+<article
+  class="card"
+  data-slug={product.slug}
+  data-category={product.category}
+  data-collection={product.collectionSlug ?? ''}
+  data-designer={product.designerSlug}
+  data-search={searchText(product)}
+  data-product={productClientData(product)}
+>
+  <a class="card__link" href={productPath(product)}>
+    <div class="img-frame img-frame--3x4 card__media">
+      <img
+        src={main.src}
+        alt={main.alt}
+        width={main.width}
+        height={main.height}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`}
+      />
+      {hover && (
+        <img
+          class="card__hover"
+          src={hover.src}
+          alt=""
+          width={hover.width}
+          height={hover.height}
+          loading="lazy"
+          decoding="async"
+          aria-hidden="true"
+          onerror="this.onerror=null;this.remove()"
+        />
+      )}
+      {(product.status?.length || discount > 0) ? (
+        <div class="card__tags">
+          {discount > 0 && <StatusTag status="promo" label={`-${discount} %`} />}
+          {product.status?.map((s) => <StatusTag status={s} />)}
+        </div>
+      ) : null}
+    </div>
+    <div class="card__body">
+      <p class="card__designer eyebrow">{designer.name}</p>
+      <h3 class="card__name">{product.name}</h3>
+      <p class="card__price">
+        {product.oldPrice !== undefined && <s class="card__old">{formatPrice(product.oldPrice)}</s>}
+        <span class:list={{ 'card__new': product.oldPrice !== undefined }}>{formatPrice(product.price)}</span>
+      </p>
+    </div>
+  </a>
+
+  <div class="card__actions">
+    <button class="card__btn" type="button" data-wish aria-pressed="false" title="Ajouter aux favoris">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 4.6 13.3a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9a4.6 4.6 0 0 1 6.5 6.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <span class="visually-hidden">Ajouter aux favoris</span>
+    </button>
+    <button class="card__btn" type="button" data-quick-add title="Ajouter au panier">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l1 12H5L6 8Z M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <span class="visually-hidden">Ajouter au panier</span>
+    </button>
+  </div>
+</article>
+
+<style>
+  .card { position: relative; }
+  .card__link { display: block; }
+  .card__media { position: relative; }
+  .card__hover { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s var(--ease); }
+  .card__link:hover .card__hover { opacity: 1; }
+  .card__tags { position: absolute; left: var(--s-3); top: var(--s-3); display: flex; gap: var(--s-1); }
+  .card__body { padding-top: var(--s-3); display: grid; gap: 2px; }
+  .card__designer { font-size: 0.65rem; }
+  .card__name { font-size: var(--fs-base); font-weight: 500; letter-spacing: -0.01em; }
+  .card__price { font-size: var(--fs-sm); color: var(--ink-70); display: flex; gap: var(--s-2); flex-wrap: wrap; }
+  .card__old { color: var(--ink-40); }
+  .card__new { color: var(--accent-ink); font-weight: 500; }
+
+  .card__actions { position: absolute; right: var(--s-2); top: var(--s-2); display: grid; gap: var(--s-1); }
+  .card__btn {
+    width: 36px; height: 36px; display: grid; place-items: center;
+    background: color-mix(in srgb, var(--paper) 88%, transparent); color: var(--ink);
+    backdrop-filter: blur(4px); transition: background 0.25s var(--ease), color 0.25s var(--ease), opacity 0.25s var(--ease);
+  }
+  .card__btn svg { width: 18px; height: 18px; }
+  .card__btn:hover { background: var(--ink); color: var(--paper); }
+  .card__btn.is-on { background: var(--accent); color: var(--ink); }
+  .card__btn.is-on svg path { fill: currentColor; }
+  @media (hover: hover) and (pointer: fine) {
+    .card__btn[data-quick-add] { opacity: 0; }
+    .card:hover .card__btn, .card:focus-within .card__btn { opacity: 1; }
+  }
+</style>
+
+<script>
+  import { initStoreButtons } from '../scripts/store';
+  initStoreButtons();
+</script>

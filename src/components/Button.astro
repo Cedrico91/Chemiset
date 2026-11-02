@@ -1,0 +1,40 @@
+---
+interface Props {
+  href?: string;
+  variant?: 'solid' | 'accent' | 'outline' | 'ghost' | 'light';
+  size?: 'sm' | 'md' | 'lg';
+  type?: 'button' | 'submit';
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, variant = 'solid', size = 'md', type = 'button', class: className, ...rest } = Astro.props;
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, className];
+---
+
+{href ? (
+  <a class:list={classes} href={href} {...rest}><slot /></a>
+) : (
+  <button class:list={classes} type={type} {...rest}><slot /></button>
+)}
+
+<style>
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+    font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1;
+    padding: 0.9rem 1.5rem; border: 1px solid transparent;
+    transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .btn--sm { padding: 0.6rem 1rem; font-size: var(--fs-xs); }
+  .btn--lg { padding: 1.1rem 2rem; }
+  .btn--solid { background: var(--ink); color: var(--paper); }
+  .btn--solid:hover { background: var(--accent); color: var(--ink); }
+  .btn--accent { background: var(--accent); color: var(--ink); }
+  .btn--accent:hover { background: var(--ink); color: var(--paper); }
+  .btn--outline { border-color: var(--ink); color: var(--ink); }
+  .btn--outline:hover { background: var(--ink); color: var(--paper); }
+  .btn--light { border-color: var(--paper); color: var(--paper); }
+  .btn--light:hover { background: var(--paper); color: var(--ink); }
+  .btn--ghost { padding-inline: 0; border: 0; color: inherit; text-transform: none; letter-spacing: 0; font-size: var(--fs-base); font-weight: 500;
+    background-image: linear-gradient(currentColor, currentColor); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%; }
+  .btn--ghost:hover { background-size: 0% 1px; }
+</style>

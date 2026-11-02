@@ -1,0 +1,55 @@
+---
+import { site } from '../config/site';
+---
+
+<dialog class="modal" id="wa-demo" aria-labelledby="wa-demo-title">
+  <form method="dialog" class="modal__inner">
+    <p class="eyebrow eyebrow--accent">Aperçu</p>
+    <h2 class="modal__title" id="wa-demo-title">Ce bouton ouvrira WhatsApp</h2>
+    <p class="muted">
+      Dès que le numéro de la boutique sera renseigné, ce bouton ouvrira une conversation WhatsApp avec {site.name}, avec ce message déjà rédigé :
+    </p>
+    <blockquote class="modal__msg" data-wa-preview></blockquote>
+    <p class="modal__note">
+      Le numéro officiel se configure en une ligne dans <code>src/config/site.ts</code>.
+    </p>
+    <button class="modal__close" type="submit" autofocus>Fermer</button>
+  </form>
+</dialog>
+
+<style>
+  .modal {
+    border: 0; padding: 0; background: var(--paper); color: var(--ink);
+    width: min(92vw, 34rem); box-shadow: 0 30px 80px rgb(0 0 0 / 0.3);
+  }
+  .modal::backdrop { background: rgb(11 11 11 / 0.6); backdrop-filter: blur(2px); }
+  .modal__inner { padding: var(--s-8); display: grid; gap: var(--s-4); }
+  .modal__title { font-size: var(--fs-lg); }
+  .modal__msg {
+    margin: 0; padding: var(--s-4); background: var(--paper-2); border-left: 2px solid var(--whatsapp);
+    font-size: var(--fs-sm); white-space: pre-line;
+  }
+  .modal__note { font-size: var(--fs-xs); color: var(--ink-40); }
+  .modal__note code { font-family: ui-monospace, Consolas, monospace; }
+  .modal__close {
+    justify-self: start; margin-top: var(--s-2);
+    background: var(--ink); color: var(--paper); padding: var(--s-3) var(--s-6);
+    font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .modal__close:hover { background: var(--accent); color: var(--ink); }
+</style>
+
+<script>
+  const dialog = document.getElementById('wa-demo') as HTMLDialogElement | null;
+  const preview = dialog?.querySelector<HTMLElement>('[data-wa-preview]');
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-wa-demo]');
+    if (!trigger || !dialog) return;
+    e.preventDefault();
+    if (preview) preview.textContent = trigger.dataset.message ?? '';
+    dialog.showModal();
+  });
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+</script>

@@ -1,0 +1,54 @@
+---
+/** Notification discrète (ajout au panier, favoris, newsletter). Déclenchée par l'événement `lca:toast`. */
+---
+
+<div class="toast" data-toast hidden role="status" aria-live="polite">
+  <span class="toast__text" data-toast-text></span>
+  <a class="toast__link" data-toast-link hidden></a>
+</div>
+
+<style>
+  .toast {
+    position: fixed; left: 50%; bottom: var(--s-6); z-index: 70;
+    transform: translate(-50%, 0);
+    display: flex; align-items: center; gap: var(--s-4);
+    max-width: min(92vw, 36rem);
+    background: var(--ink); color: var(--paper);
+    padding: var(--s-3) var(--s-5); font-size: var(--fs-sm);
+    box-shadow: 0 20px 50px rgb(0 0 0 / 0.25);
+    animation: toast-in 0.35s var(--ease) both;
+  }
+  .toast[hidden] { display: none; }
+  .toast__link {
+    white-space: nowrap; font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+    color: var(--paper); border-bottom: 1px solid currentColor;
+  }
+  .toast__link:hover { color: var(--accent); }
+  @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  @media (min-width: 960px) { .toast { bottom: var(--s-8); } }
+</style>
+
+<script>
+  import { TOAST_EVENT } from '../scripts/store';
+
+  const box = document.querySelector<HTMLElement>('[data-toast]');
+  const text = box?.querySelector<HTMLElement>('[data-toast-text]');
+  const link = box?.querySelector<HTMLAnchorElement>('[data-toast-link]');
+  let timer: number | undefined;
+
+  window.addEventListener(TOAST_EVENT, (e) => {
+    if (!box || !text || !link) return;
+    const detail = (e as CustomEvent<{ message: string; link?: { href: string; label: string } }>).detail;
+    text.textContent = detail.message;
+    if (detail.link) {
+      link.href = detail.link.href;
+      link.textContent = detail.link.label;
+      link.hidden = false;
+    } else {
+      link.hidden = true;
+    }
+    box.hidden = false;
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => (box.hidden = true), 3500);
+  });
+</script>

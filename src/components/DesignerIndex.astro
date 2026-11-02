@@ -1,0 +1,17 @@
+---
+import type { Designer } from '../data/types';
+import DesignerCard from './DesignerCard.astro';
+
+interface Props { designers: Designer[]; }
+const { designers } = Astro.props;
+---
+
+<div class="dgrid">
+  {designers.map((d) => <DesignerCard designer={d} />)}
+</div>
+
+<style>
+  .dgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-8) var(--s-4); }
+  @media (min-width: 640px) { .dgrid { gap: var(--s-10) var(--s-6); } }
+  @media (min-width: 960px) { .dgrid { grid-template-columns: repeat(3, 1fr); } }
+</style>

@@ -1,0 +1,25 @@
+---
+import type { Product } from '../data/types';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  products: Product[];
+  columns?: 3 | 4;
+  eagerCount?: number;
+  emptyText?: string;
+}
+const { products, columns = 4, eagerCount = 0, emptyText = 'Aucune pièce ne correspond à ce filtre pour le moment.' } = Astro.props;
+---
+
+<div class:list={['grid', `grid--${columns}`]} data-product-grid>
+  {products.map((p, i) => <ProductCard product={p} eager={i < eagerCount} />)}
+</div>
+<p class="grid__empty" data-grid-empty hidden>{emptyText}</p>
+
+<style>
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-8) var(--s-4); }
+  .grid__empty { padding: var(--s-16) 0; text-align: center; color: var(--ink-40); }
+  @media (min-width: 640px) { .grid { gap: var(--s-10) var(--s-6); } }
+  @media (min-width: 960px) { .grid--3, .grid--4 { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1280px) { .grid--4 { grid-template-columns: repeat(4, 1fr); } }
+</style>

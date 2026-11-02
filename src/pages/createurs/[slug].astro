@@ -1,0 +1,64 @@
+---
+import { withBase, PLACEHOLDER } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import ProductGrid from '../../components/ProductGrid.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { designers, productsByDesigner } from '../../lib/catalogue';
+import { paragraphs } from '../../lib/format';
+import type { Designer } from '../../data/types';
+
+export function getStaticPaths() {
+  return designers.map((d) => ({ params: { slug: d.slug }, props: { designer: d } }));
+}
+interface Props { designer: Designer; }
+const { designer } = Astro.props;
+const items = productsByDesigner(designer.slug);
+const bio = paragraphs(designer.bio);
+---
+
+<Base title={designer.name} description={designer.tagline} image={designer.portrait.src} current="createurs">
+  <section class="section--tight section">
+    <div class="container profile">
+      <div class="profile__media">
+        <div class="img-frame img-frame--4x5">
+          <img src={designer.portrait.src} alt={designer.portrait.alt} width={designer.portrait.width} height={designer.portrait.height} loading="eager" fetchpriority="high" decoding="async" onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`} />
+        </div>
+        {designer.portrait.credit && <p class="profile__credit">Visuel d’illustration : {designer.portrait.credit}</p>}
+      </div>
+      <div class="profile__text">
+        <p class="eyebrow"><a class="link-underline" href={withBase("/createurs/")}>Nos créateurs</a> · {designer.country}{designer.city ? `, ${designer.city}` : ''}</p>
+        <h1 class="display profile__name">{designer.name}</h1>
+        <p class="profile__tagline serif-italic">{designer.tagline}</p>
+        <div class="profile__bio">
+          {bio.map((p) => <p>{p}</p>)}
+        </div>
+        <ul class="profile__specialties">
+          {designer.specialties.map((s) => <li>{s}</li>)}
+        </ul>
+        {designer.instagram && <a class="link-underline" href={designer.instagram} target="_blank" rel="noopener">Instagram</a>}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper-2">
+    <div class="container">
+      <SectionHeading eyebrow={`${items.length} pièce${items.length > 1 ? 's' : ''}`} title={`Les créations de ${designer.name}`} link={{ label: 'Tout le catalogue', href: withBase('/catalogue/') }} />
+      <ProductGrid products={items} eagerCount={4} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .profile { display: grid; gap: var(--s-10); }
+  .profile__credit { font-size: 0.65rem; color: var(--ink-40); margin-top: var(--s-2); }
+  .profile__text { display: grid; gap: var(--s-5); align-content: start; }
+  .profile__name { font-size: var(--fs-xl); }
+  .profile__tagline { font-size: var(--fs-lg); color: var(--ink-70); }
+  .profile__bio { display: grid; gap: var(--s-4); max-width: 56ch; color: var(--ink-70); }
+  .profile__specialties { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .profile__specialties li { font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; padding: 0.4rem 0.7rem; border: 1px solid var(--line); }
+  @media (min-width: 960px) {
+    .profile { grid-template-columns: 0.8fr 1.2fr; gap: var(--s-16); align-items: start; }
+    .profile__text { padding-top: var(--s-8); }
+  }
+</style>

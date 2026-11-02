@@ -1,0 +1,58 @@
+---
+import type { Designer, Product } from '../data/types';
+import { site } from '../config/site';
+import { buildOrderMessage, buildWaLink, hasWhatsApp } from '../lib/whatsapp';
+import { productPath } from '../lib/catalogue';
+
+interface Props {
+  product?: Product;
+  designer?: Designer;
+  label?: string;
+  variant?: 'accent' | 'solid' | 'outline' | 'whatsapp';
+  size?: 'sm' | 'md' | 'lg';
+  full?: boolean;
+  class?: string;
+}
+const { product, designer, label = 'Commander sur WhatsApp', variant = 'whatsapp', size = 'md', full = false, class: className } = Astro.props;
+
+const url = product ? new URL(productPath(product), site.url).href : undefined;
+const message = buildOrderMessage(product, designer, url);
+const live = hasWhatsApp();
+const classes = ['wa', `wa--${variant}`, `wa--${size}`, { 'wa--full': full }, className];
+---
+
+{live ? (
+  <a class:list={classes} href={buildWaLink(site.whatsapp, message)} target="_blank" rel="noopener">
+    <svg class="wa__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+    <span>{label}</span>
+  </a>
+) : (
+  <button class:list={classes} type="button" data-wa-demo data-message={message} title="Démo : ouvrira WhatsApp sur le site final">
+    <svg class="wa__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+    <span>{label}</span>
+  </button>
+)}
+
+<style>
+  .wa {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+    font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.9rem 1.5rem; border: 1px solid transparent; line-height: 1;
+    transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.25s var(--ease);
+  }
+  .wa:active { transform: translateY(1px); }
+  .wa__icon { width: 1.1em; height: 1.1em; flex: none; }
+  .wa--sm { padding: 0.6rem 1rem; font-size: var(--fs-xs); }
+  .wa--lg { padding: 1.1rem 2rem; }
+  .wa--full { width: 100%; }
+
+  .wa--whatsapp { background: var(--whatsapp); color: #fff; }
+  .wa--whatsapp:hover { background: #176e49; }
+  .wa--accent { background: var(--accent); color: var(--ink); }
+  .wa--accent:hover { background: var(--ink); color: var(--paper); }
+  .wa--solid { background: var(--ink); color: var(--paper); }
+  .wa--solid:hover { background: var(--ink-70); }
+  .wa--outline { background: transparent; color: currentColor; border-color: currentColor; }
+  .wa--outline:hover { background: currentColor; }
+  .wa--outline:hover span, .wa--outline:hover .wa__icon { color: var(--paper); mix-blend-mode: difference; }
+</style>

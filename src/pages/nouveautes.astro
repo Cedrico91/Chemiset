@@ -1,0 +1,45 @@
+---
+import { withBase } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { products, shopPaths } from '../lib/catalogue';
+
+const fresh = products.filter((p) => p.status?.includes('nouveaute'));
+const others = products.filter((p) => !fresh.includes(p) && p.featured);
+---
+
+<Base title="Nouveautés" description="Les dernières pièces arrivées à La Chemise Africaine." current="nouveautes">
+  <section class="section--tight section">
+    <div class="container">
+      <header class="head">
+        <p class="eyebrow eyebrow--accent">Nouveautés</p>
+        <h1 class="title-xl">Les dernières pièces arrivées en boutique</h1>
+        <p class="lede">Nouvelles chemises, robes et accessoires, mis en ligne dès leur arrivée. Inscrivez-vous à la newsletter pour être prévenu.</p>
+      </header>
+      <ProductGrid products={fresh} eagerCount={4} emptyText="Aucune nouveauté cette semaine : retrouvez toute la sélection dans le catalogue." />
+    </div>
+  </section>
+
+  {others.length > 0 && (
+    <section class="section section--paper-2">
+      <div class="container">
+        <SectionHeading eyebrow="Toujours là" title="Les pièces mises en avant" link={{ label: 'Tout le catalogue', href: withBase('/catalogue/') }} />
+        <ProductGrid products={others} />
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container cta">
+      <p class="eyebrow">Vous cherchez une chemise ?</p>
+      <h2 class="title-lg">La sélection permanente de chemises, pour elle et pour lui.</h2>
+      <a class="link-underline" href={shopPaths.shirts}>Voir les chemises</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { display: grid; gap: var(--s-3); margin-bottom: var(--s-8); }
+  .cta { display: grid; gap: var(--s-3); justify-items: start; max-width: 44rem; font-size: var(--fs-sm); }
+</style>

@@ -1,0 +1,43 @@
+---
+import { withBase, PLACEHOLDER } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import ProductGrid from '../../components/ProductGrid.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { collections, productsByCollection } from '../../lib/catalogue';
+import type { Collection } from '../../data/types';
+
+export function getStaticPaths() {
+  return collections.map((c) => ({ params: { slug: c.slug }, props: { collection: c } }));
+}
+interface Props { collection: Collection; }
+const { collection } = Astro.props;
+const items = productsByCollection(collection.slug);
+---
+
+<Base title={collection.title} description={collection.description} image={collection.cover.src} current="collections">
+  <section class="cover">
+    <div class="img-frame cover__media">
+      <img src={collection.cover.src} alt={collection.cover.alt} width={collection.cover.width} height={collection.cover.height} loading="eager" fetchpriority="high" decoding="async" onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`} />
+    </div>
+    <div class="container cover__text">
+      <p class="eyebrow"><a class="link-underline" href={withBase("/collections/")}>Collections</a>{collection.season ? ` · ${collection.season}` : ''}</p>
+      <h1 class="display cover__title">{collection.title}</h1>
+      <p class="lede">{collection.subtitle}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHeading eyebrow={`${items.length} pièce${items.length > 1 ? 's' : ''}`} title={collection.description} as="h2" />
+      <ProductGrid products={items} eagerCount={4} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cover { display: grid; gap: var(--s-8); }
+  .cover__media { aspect-ratio: 16 / 9; max-height: 70vh; }
+  .cover__text { display: grid; gap: var(--s-3); }
+  .cover__title { font-size: var(--fs-xl); }
+  @media (min-width: 960px) { .cover__media { aspect-ratio: 21 / 9; } }
+</style>
