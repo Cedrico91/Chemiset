@@ -35,9 +35,9 @@ import { designers, products, shopPaths } from '../lib/catalogue';
       </div>
       <figure class="intro__media">
         <div class="img-frame" style="aspect-ratio: 4 / 3;">
-          <img src={visuals.atelier.src} alt={visuals.atelier.alt} width={visuals.atelier.width} height={visuals.atelier.height} loading="eager" decoding="async" onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`} />
+          <img src={visuals.boutiqueFacade.src} alt={visuals.boutiqueFacade.alt} width={visuals.boutiqueFacade.width} height={visuals.boutiqueFacade.height} loading="eager" decoding="async" onerror={`this.onerror=null;this.src='${PLACEHOLDER}'`} />
         </div>
-        {site.demo && <figcaption class="eyebrow">Visuel d’illustration · {visuals.atelier.credit}</figcaption>}
+        {visuals.boutiqueFacade.credit && <figcaption class="eyebrow">Visuel d’illustration · {visuals.boutiqueFacade.credit}</figcaption>}
       </figure>
     </div>
   </section>

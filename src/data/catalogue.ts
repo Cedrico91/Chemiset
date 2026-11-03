@@ -640,8 +640,11 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
 
 /** Visuels hors catalogue (hero, à propos). */
 export const visuals = {
-  heroDesktop: img('/images/hero/hero-desktop.webp', 'Trois silhouettes en pagne devant un mur patiné, visuel d’illustration', 1920, 1080, 'Pexels'),
-  heroMobile: img('/images/hero/hero-mobile.webp', 'Silhouette en robe et chapeau devant un mur jaune, visuel d’illustration', 1080, 1350, 'Eduardo Espinoza / Unsplash'),
+  // Photos de la boutique (façade retravaillée à partir de la photo du client) : pas de crédit, pas de mention « illustration ».
+  heroDesktop: img('/images/hero/hero-desktop.webp', 'La façade orange de La Chemise Africaine : enseigne, auvent en paille, vitrine et porte en bois', 1672, 941),
+  heroMobile: img('/images/hero/hero-mobile.webp', 'La façade orange de La Chemise Africaine, enseigne et vitrine', 1080, 1382),
+  boutiqueSoir: img('/images/misc/boutique-soir.webp', 'La boutique à la tombée du jour, vitrine et porte éclairées', 1122, 842),
+  boutiqueFacade: img('/images/misc/boutique-facade.webp', 'La façade de la boutique en journée, vue de la rue', 1122, 842),
   atelier: img('/images/misc/atelier-tissus.webp', 'Tissus wax au marché, visuel d’illustration', 1600, 1200, 'Pexels'),
   batik: img('/images/misc/batik.webp', 'Main traçant un motif au batik, visuel d’illustration', 1600, 1200, 'Pexels'),
   duo: img('/images/misc/duo-createurs.webp', 'Deux silhouettes en pagne et coiffes devant des tissus suspendus, visuel d’illustration', 1200, 1500, 'Pexels'),
