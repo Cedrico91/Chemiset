@@ -29,6 +29,11 @@ export function assertCatalogueIntegrity(): void {
     if (!p.images.length) errors.push(`Produit "${p.slug}" : aucune image`);
     if (p.oldPrice !== undefined && (p.price === undefined || p.oldPrice <= p.price))
       errors.push(`Produit "${p.slug}" : oldPrice doit être supérieur à price`);
+    if (p.priceRange) {
+      if (p.price !== undefined) errors.push(`Produit "${p.slug}" : price et priceRange sont exclusifs`);
+      if (!(p.priceRange[0] > 0 && p.priceRange[1] > p.priceRange[0]))
+        errors.push(`Produit "${p.slug}" : priceRange doit être [min, max] avec min < max`);
+    }
   }
   if (errors.length) {
     throw new Error(`Catalogue invalide :\n - ${errors.join('\n - ')}`);
@@ -124,6 +129,7 @@ export const productClientData = (p: Product): string =>
     name: p.name,
     designer: designerOf(p).name,
     price: p.price ?? null,
+    priceRange: p.priceRange ?? null,
     oldPrice: p.oldPrice ?? null,
     image: p.images[0].src,
     url: productPath(p),

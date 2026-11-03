@@ -11,7 +11,7 @@ import {
   designerOf, designerPath, discountPercent, getCategory, getCollection, productClientData, products,
   relatedProducts, categoryPath, collectionPath, shopPaths,
 } from '../../lib/catalogue';
-import { formatPrice } from '../../lib/format';
+import { formatPrice, priceLabel } from '../../lib/format';
 import type { Product } from '../../data/types';
 
 export function getStaticPaths() {
@@ -53,7 +53,7 @@ const sizes = product.sizes ?? [];
           ) : null}
           <p class="product__price">
             {product.oldPrice !== undefined && <s class="product__old">{formatPrice(product.oldPrice)}</s>}
-            <span class:list={{ 'product__new': product.oldPrice !== undefined }}>{formatPrice(product.price)}</span>
+            <span class:list={{ 'product__new': product.oldPrice !== undefined }}>{priceLabel(product)}</span>
           </p>
           <p class="product__desc">{product.description}</p>
 
@@ -100,7 +100,8 @@ const sizes = product.sizes ?? [];
             <WhatsAppButton product={product} designer={designer} label="Commander directement sur WhatsApp" size="lg" full />
             <p class="product__note">
               Le règlement se fait avec la boutique, sur WhatsApp : tailles, retouches et livraison se décident ensemble.
-              {product.price === undefined && ' Le prix vous est communiqué sur demande.'}
+              {product.price === undefined && product.priceRange && ' Le prix exact de cette pièce vous est confirmé sur WhatsApp.'}
+              {product.price === undefined && !product.priceRange && ' Le prix vous est communiqué sur demande.'}
             </p>
           </div>
 

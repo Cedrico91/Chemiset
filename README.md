@@ -45,6 +45,7 @@ Pour montrer le site sur un téléphone du même Wi-Fi : `npx astro dev --host`.
 | Conditions de livraison, règlement, échanges, retouches | `site.delivery.*` (affichées sur Livraison & retours, FAQ, services) |
 | Raison sociale, RCCM, IFU, responsable, hébergeur | `site.legal.*` (page Mentions légales) |
 | Pièces : nom, créateur, catégorie, prix, tailles, matières, 2 photos 3:4 | `src/data/catalogue.ts` + `public/images/products/` |
+| Prix exact de chaque modèle de la boutique (fourchette 5 000 à 10 000 FCFA affichée en attendant) | `price` remplace `priceRange` dans `src/data/catalogue.ts` |
 | Créateurs : nom, pays, ville, portrait 4:5, courte bio | `src/data/catalogue.ts` + `public/images/designers/` |
 | Photos de campagne (hero 1920×1080 et 1080×1350, rayons, boutique) | `public/images/hero/`, tuiles de l'accueil (`src/pages/index.astro`) |
 

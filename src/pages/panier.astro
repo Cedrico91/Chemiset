@@ -130,7 +130,7 @@ const suggestions = featuredProducts(4);
 </style>
 
 <script>
-  import { STORE_EVENT, buildCartMessage, cartCount, cartTotal, clearCart, formatPrice, getCart, lineKey, removeLine, updateLine, toast } from '../scripts/store';
+  import { STORE_EVENT, buildCartMessage, cartCount, cartTotal, clearCart, formatPrice, getCart, lineKey, priceLabel, removeLine, updateLine, toast } from '../scripts/store';
 
   const root = document.querySelector<HTMLElement>('[data-cart]');
   if (root) {
@@ -164,13 +164,13 @@ const suggestions = featuredProducts(4);
                  ${l.sizes.map((s) => `<option value="${esc(s)}" ${s === l.size ? 'selected' : ''}>${esc(s)}</option>`).join('')}
                </select>`
             : '';
-          const lineTotal = l.price === null ? 'Prix sur demande' : formatPrice(l.price * l.qty);
+          const lineTotal = l.price !== null ? formatPrice(l.price * l.qty) : l.priceRange ? 'À confirmer' : 'Prix sur demande';
           return `<li class="line">
             <a class="line__img" href="${esc(l.url)}"><img src="${esc(l.image)}" alt="" width="300" height="400" loading="lazy" onerror="this.onerror=null;this.src='${esc(placeholder)}'"></a>
             <div class="line__body">
               <p class="line__designer eyebrow">${esc(l.designer)}</p>
               <a class="line__name" href="${esc(l.url)}">${esc(l.name)}</a>
-              <p class="line__price">${formatPrice(l.price)}${l.oldPrice ? ` <s>${formatPrice(l.oldPrice)}</s>` : ''}</p>
+              <p class="line__price">${priceLabel(l)}${l.oldPrice ? ` <s>${formatPrice(l.oldPrice)}</s>` : ''}</p>
               <div class="line__controls">
                 ${sizeCtl}
                 <div class="qty">

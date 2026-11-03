@@ -210,6 +210,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     // =========================================================================
     {
       slug: 'chemise-col-mao-plastron-indigo',
+      priceRange: [5000, 10000], // fourchette communiquée par la boutique ; prix exact à saisir dans `price`
       name: 'Chemise col mao, plastron indigo',
       designerSlug: 'la-chemise-africaine',
       category: 'homme',
@@ -223,6 +224,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'chemise-batik-ocre',
+      priceRange: [5000, 10000], // fourchette communiquée par la boutique ; prix exact à saisir dans `price`
       name: 'Chemise batik ocre',
       designerSlug: 'la-chemise-africaine',
       category: 'homme',
@@ -236,6 +238,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'tunique-verte-rayures',
+      priceRange: [5000, 10000], // fourchette communiquée par la boutique ; prix exact à saisir dans `price`
       name: 'Tunique verte à rayures',
       designerSlug: 'la-chemise-africaine',
       category: 'homme',
@@ -249,6 +252,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'chemise-bordeaux-bandes-ikat',
+      priceRange: [5000, 10000], // fourchette communiquée par la boutique ; prix exact à saisir dans `price`
       name: 'Chemise bordeaux à bandes ikat',
       designerSlug: 'la-chemise-africaine',
       category: 'homme',
@@ -267,7 +271,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     // ---- HOMME
     {
       slug: 'chemise-cotonou',
-      price: 28000, // PRIX DE DÉMONSTRATION
+      price: 8500, // PRIX DE DÉMONSTRATION
       name: 'Chemise Cotonou',
       designerSlug: 'kofi-mensah',
       category: 'homme',
@@ -286,8 +290,8 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'chemise-dahomey',
-      price: 24000, // PRIX DE DÉMONSTRATION
-      oldPrice: 29000, // prix barré fictif (offre spéciale)
+      price: 7000, // PRIX DE DÉMONSTRATION
+      oldPrice: 8500, // prix barré fictif (offre spéciale)
       name: 'Chemise Dahomey',
       designerSlug: 'kofi-mensah',
       category: 'homme',
@@ -305,7 +309,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'tunique-natitingou',
-      price: 32000, // PRIX DE DÉMONSTRATION
+      price: 9500, // PRIX DE DÉMONSTRATION
       name: 'Tunique Natitingou',
       designerSlug: 'sekou-diallo',
       category: 'homme',
@@ -324,7 +328,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'ensemble-kandi',
-      price: 65000, // PRIX DE DÉMONSTRATION
+      price: 15000, // PRIX DE DÉMONSTRATION
       name: 'Ensemble Kandi',
       designerSlug: 'sekou-diallo',
       category: 'homme',
@@ -342,7 +346,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'boubou-parakou',
-      price: 85000, // PRIX DE DÉMONSTRATION
+      price: 18000, // PRIX DE DÉMONSTRATION
       name: 'Boubou Parakou',
       designerSlug: 'sekou-diallo',
       category: 'homme',
@@ -360,7 +364,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'veste-savalou',
-      price: 72000, // PRIX DE DÉMONSTRATION
+      price: 16000, // PRIX DE DÉMONSTRATION
       name: 'Veste Savalou',
       designerSlug: 'elom-agbeko',
       category: 'homme',
@@ -379,7 +383,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'chemise-lokossa',
-      price: 26000, // PRIX DE DÉMONSTRATION
+      price: 7500, // PRIX DE DÉMONSTRATION
       name: 'Chemise Lokossa',
       designerSlug: 'kofi-mensah',
       category: 'homme',
@@ -399,7 +403,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     // ---- FEMME
     {
       slug: 'robe-ganvie',
-      price: 45000, // PRIX DE DÉMONSTRATION
+      price: 12000, // PRIX DE DÉMONSTRATION
       name: 'Robe Ganvié',
       designerSlug: 'ayaba-hounkpe',
       category: 'femme',
@@ -418,7 +422,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'ensemble-ouidah',
-      price: 58000, // PRIX DE DÉMONSTRATION
+      price: 14000, // PRIX DE DÉMONSTRATION
       name: 'Ensemble Ouidah',
       designerSlug: 'ayaba-hounkpe',
       category: 'femme',
@@ -436,7 +440,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'chemise-porto-novo',
-      price: 25000, // PRIX DE DÉMONSTRATION
+      price: 7000, // PRIX DE DÉMONSTRATION
       name: 'Chemise Porto-Novo',
       designerSlug: 'ayaba-hounkpe',
       category: 'femme',
@@ -454,7 +458,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'robe-abomey',
-      price: 95000, // PRIX DE DÉMONSTRATION
+      price: 18000, // PRIX DE DÉMONSTRATION
       name: 'Robe Abomey',
       designerSlug: 'adaeze-okafor',
       category: 'femme',
@@ -472,8 +476,8 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'tunique-seme',
-      price: 30000, // PRIX DE DÉMONSTRATION
-      oldPrice: 36000, // prix barré fictif (offre spéciale)
+      price: 8000, // PRIX DE DÉMONSTRATION
+      oldPrice: 10000, // prix barré fictif (offre spéciale)
       name: 'Tunique Sèmè',
       designerSlug: 'ayaba-hounkpe',
       category: 'femme',
@@ -491,7 +495,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'jupe-possotome',
-      price: 35000, // PRIX DE DÉMONSTRATION
+      price: 9000, // PRIX DE DÉMONSTRATION
       name: 'Jupe Possotomè',
       designerSlug: 'ayaba-hounkpe',
       category: 'femme',
@@ -509,8 +513,8 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'robe-grand-popo',
-      price: 42000, // PRIX DE DÉMONSTRATION
-      oldPrice: 49000, // prix barré fictif (offre spéciale)
+      price: 11000, // PRIX DE DÉMONSTRATION
+      oldPrice: 13500, // prix barré fictif (offre spéciale)
       name: 'Robe Grand-Popo',
       designerSlug: 'adaeze-okafor',
       category: 'femme',
@@ -529,7 +533,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'ensemble-dassa',
-      price: 55000, // PRIX DE DÉMONSTRATION
+      price: 13500, // PRIX DE DÉMONSTRATION
       name: 'Ensemble Dassa',
       designerSlug: 'adaeze-okafor',
       category: 'femme',
@@ -549,7 +553,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     // ---- ACCESSOIRES
     {
       slug: 'collier-perles',
-      price: 15000, // PRIX DE DÉMONSTRATION
+      price: 4500, // PRIX DE DÉMONSTRATION
       name: 'Collier Cocody',
       designerSlug: 'nadege-kouassi',
       category: 'accessoires',
@@ -567,7 +571,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'boucles-spirale',
-      price: 9000, // PRIX DE DÉMONSTRATION
+      price: 2500, // PRIX DE DÉMONSTRATION
       name: 'Boucles Spirale',
       designerSlug: 'nadege-kouassi',
       category: 'accessoires',
@@ -583,8 +587,8 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'bracelets-perles',
-      price: 12000, // PRIX DE DÉMONSTRATION
-      oldPrice: 15000, // prix barré fictif (offre spéciale)
+      price: 3000, // PRIX DE DÉMONSTRATION
+      oldPrice: 4000, // prix barré fictif (offre spéciale)
       name: 'Bracelets Lagune',
       designerSlug: 'nadege-kouassi',
       category: 'accessoires',
@@ -600,7 +604,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'foulard-bohicon',
-      price: 8000, // PRIX DE DÉMONSTRATION
+      price: 2500, // PRIX DE DÉMONSTRATION
       name: 'Foulard Bohicon',
       designerSlug: 'nadege-kouassi',
       category: 'accessoires',
@@ -616,7 +620,7 @@ Il privilégie les coupes structurées et les détails utiles : poches plaquées
     },
     {
       slug: 'sac-pagne',
-      price: 22000, // PRIX DE DÉMONSTRATION
+      price: 6500, // PRIX DE DÉMONSTRATION
       name: 'Sac Lomé',
       designerSlug: 'elom-agbeko',
       category: 'accessoires',

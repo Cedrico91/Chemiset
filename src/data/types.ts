@@ -49,8 +49,10 @@ export interface Product {
   category: CategoryId;
   collectionSlug?: string;
   description: string;
-  /** Prix en FCFA. Absent = « Prix sur demande ». */
+  /** Prix en FCFA. Absent = « Prix sur demande » (ou fourchette si `priceRange` est renseigné). */
   price?: number;
+  /** Fourchette [min, max] en FCFA, affichée tant que le prix exact n'est pas fixé. Exclusif avec `price`. */
+  priceRange?: [number, number];
   /** Ancien prix barré (offre spéciale). Doit être supérieur à `price`. */
   oldPrice?: number;
   /** [0] = image principale. */

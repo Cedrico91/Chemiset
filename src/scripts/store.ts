@@ -12,6 +12,8 @@ export interface ProductData {
   name: string;
   designer: string;
   price: number | null;
+  /** Fourchette affichée quand le prix exact n'est pas fixé (confirmé sur WhatsApp). */
+  priceRange: [number, number] | null;
   oldPrice: number | null;
   image: string;
   url: string;
@@ -61,6 +63,18 @@ export function formatPrice(n: number | null | undefined): string {
   if (n === null || n === undefined || Number.isNaN(n)) return 'Prix sur demande';
   // Espaces insécables (U+00A0) : un prix ne se coupe jamais en fin de ligne, comme côté build.
   return `${new Intl.NumberFormat('fr-FR').format(n).replace(/[   ]/g, ' ')} FCFA`;
+}
+
+/** [5000, 10000] -> "5 000 à 10 000 FCFA". */
+export function formatPriceRange(range: [number, number]): string {
+  return `${formatPrice(range[0]).replace(/\s*FCFA$/u, '')} à ${formatPrice(range[1])}`;
+}
+
+/** Prix exact, sinon fourchette, sinon « Prix sur demande ». */
+export function priceLabel(p: { price: number | null; priceRange: [number, number] | null }): string {
+  if (p.price !== null) return formatPrice(p.price);
+  if (p.priceRange) return formatPriceRange(p.priceRange);
+  return formatPrice(null);
 }
 
 export function toast(message: string, link?: { href: string; label: string }): void {
@@ -140,11 +154,16 @@ export function buildCartMessage(shopName: string, cart: CartLine[]): string {
   if (!cart.length) return `Bonjour ${shopName}, je souhaite des informations sur vos créations.`;
   const lines = cart.map((l) => {
     const size = l.sizes.length ? ` · taille ${l.size ?? 'à préciser'}` : '';
-    const price = l.price === null ? 'prix sur demande' : formatPrice(l.price * l.qty);
+    const price =
+      l.price !== null ? formatPrice(l.price * l.qty) : l.priceRange ? `${formatPriceRange(l.priceRange)} l'unité, à confirmer` : 'prix sur demande';
     return `• ${l.qty} × ${l.name} (${l.designer})${size} — ${price}`;
   });
   const { total, complete } = cartTotal();
-  const totalLine = complete ? `Total indicatif : ${formatPrice(total)}` : `Sous-total des pièces à prix connu : ${formatPrice(total)}`;
+  const totalLine = complete
+    ? `Total indicatif : ${formatPrice(total)}`
+    : total > 0
+      ? `Sous-total des pièces à prix connu : ${formatPrice(total)} (le reste à confirmer)`
+      : 'Total à confirmer avec la boutique.';
   return `Bonjour ${shopName}, je souhaite commander :\n${lines.join('\n')}\n${totalLine}\nMerci de me confirmer la disponibilité et la livraison.`;
 }
 

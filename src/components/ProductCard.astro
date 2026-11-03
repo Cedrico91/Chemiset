@@ -2,7 +2,7 @@
 import { PLACEHOLDER } from '../lib/url';
 import type { Product } from '../data/types';
 import { designerOf, discountPercent, productClientData, productPath, searchText } from '../lib/catalogue';
-import { formatPrice } from '../lib/format';
+import { formatPrice, priceLabel } from '../lib/format';
 import StatusTag from './StatusTag.astro';
 
 interface Props {
@@ -60,7 +60,7 @@ const discount = discountPercent(product);
       <h3 class="card__name">{product.name}</h3>
       <p class="card__price">
         {product.oldPrice !== undefined && <s class="card__old">{formatPrice(product.oldPrice)}</s>}
-        <span class:list={{ 'card__new': product.oldPrice !== undefined }}>{formatPrice(product.price)}</span>
+        <span class:list={{ 'card__new': product.oldPrice !== undefined }}>{priceLabel(product)}</span>
       </p>
     </div>
   </a>
