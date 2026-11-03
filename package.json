@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "links": "node scripts/check-links.mjs",
-    "images": "node scripts/fetch-images.mjs"
+    "images": "node scripts/fetch-images.mjs",
+    "deploy:netlify": "npx -y netlify-cli@latest deploy --prod --dir dist --no-build"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.5",
